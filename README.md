@@ -5,3 +5,5 @@ João Daniel de Liz
 João Gabriel Rosso Dagostin
 <br>
 João Pedro Taufembach Acordi
+<br>
+Rafael Ronsoni
