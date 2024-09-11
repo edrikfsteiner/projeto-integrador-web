@@ -6,4 +6,4 @@ João Gabriel Rosso Dagostin
 <br>
 João Pedro Taufembach Acordi
 <br>
-Rafael Ronsoni
+Rafael Ronsoni Gaidzinski
