@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, Modal, TextField, List, ListItem, ListItemText, ListItemAvatar, Avatar, Paper } from '@mui/material';
+import { Box, Typography, Button, Modal, TextField, List, ListItem, ListItemText, ListItemAvatar, Avatar, Paper, MenuItem } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import InventoryIcon from '@mui/icons-material/Inventory';
 
@@ -17,11 +17,16 @@ const style = {
 
 function StockSystem() {
   const [items, setItems] = useState([
-    { name: 'Paracetamol', quantity: 20 },
-    { name: 'Ibuprofeno', quantity: 15 },
+    { name: 'Paracetamol', quantity: 20, value: 10.0, category: 'Medicamento' },
+    { name: 'Ibuprofeno', quantity: 15, value: 12.5, category: 'Medicamento' },
   ]);
   const [open, setOpen] = useState(false);
-  const [newItem, setNewItem] = useState({ name: '', quantity: '' });
+  const [newItem, setNewItem] = useState({
+    name: '',
+    quantity: '',
+    value: '',
+    category: '',
+  });
 
   // Função para abrir/fechar o modal
   const handleOpen = () => setOpen(true);
@@ -30,7 +35,7 @@ function StockSystem() {
   // Função para adicionar o item
   const handleAddItem = () => {
     setItems([...items, newItem]);
-    setNewItem({ name: '', quantity: '' });
+    setNewItem({ name: '', quantity: '', value: '', category: '' });
     handleClose();
   };
 
@@ -53,16 +58,27 @@ function StockSystem() {
                   <InventoryIcon />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary={item.name} secondary={`Quantidade: ${item.quantity}`} />
+              <ListItemText
+                primary={item.name}
+                secondary={
+                  <>
+                    Quantidade: {item.quantity} <br />
+                    Valor: R${item.value.toFixed(2)} <br />
+                    Categoria: {item.category}
+                  </>
+                }
+              />
             </ListItem>
           ))}
         </List>
       </Paper>
 
       {/* Botão para abrir o modal - Movido para baixo */}
-      <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpen} sx={{ mt: 3 }}>
-        Adicionar Item
-      </Button>
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpen}>
+          Adicionar Item
+        </Button>
+      </Box>
 
       {/* Modal para adicionar novo item */}
       <Modal open={open} onClose={handleClose}>
@@ -70,6 +86,7 @@ function StockSystem() {
           <Typography variant="h6" gutterBottom>
             Adicionar Novo Item
           </Typography>
+
           <TextField
             fullWidth
             label="Nome do Item"
@@ -77,6 +94,7 @@ function StockSystem() {
             onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
             sx={{ mb: 2 }}
           />
+
           <TextField
             fullWidth
             label="Quantidade"
@@ -85,6 +103,30 @@ function StockSystem() {
             onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
             sx={{ mb: 2 }}
           />
+
+          <TextField
+            fullWidth
+            label="Valor (R$)"
+            type="number"
+            value={newItem.value}
+            onChange={(e) => setNewItem({ ...newItem, value: e.target.value })}
+            sx={{ mb: 2 }}
+          />
+
+          <TextField
+            fullWidth
+            select
+            label="Categoria"
+            value={newItem.category}
+            onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
+            sx={{ mb: 2 }}
+          >
+            <MenuItem value="Medicamento">Medicamento</MenuItem>
+            <MenuItem value="Cosmético">Cosmético</MenuItem>
+            <MenuItem value="Suplemento">Suplemento</MenuItem>
+            <MenuItem value="Outro">Outro</MenuItem>
+          </TextField>
+
           <Button variant="contained" fullWidth onClick={handleAddItem}>
             Adicionar
           </Button>

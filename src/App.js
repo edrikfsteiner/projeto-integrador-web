@@ -43,7 +43,7 @@ function App() {
         >
           <Avatar
             alt="Usuário"
-            src="https://via.placeholder.com/100"
+            src="https://cdn-icons-png.flaticon.com/512/61/61173.png"
             sx={{ width: 100, height: 100 }}
           />
           <Typography variant="h6" sx={{ marginTop: 2 }}>
