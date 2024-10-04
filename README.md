@@ -23,7 +23,7 @@
 ### Mockup 
 - [Figma](https://www.figma.com/design/ReeelkRsRgmTHFNUQaWGjs/Untitled?node-id=0-1&t=H2iFsoy8EckTBAQ4-1)
 
-- <br>
+<br>
 
 ### Ferramenta para o Gerenciamento do Projeto
 - [Trello](https://trello.com/b/KBp3WvpU/Projeto%20Integrador%20Web)
