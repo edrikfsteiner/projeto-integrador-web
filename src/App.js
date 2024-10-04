@@ -2,15 +2,23 @@ import React, { useState } from 'react';
 import { Drawer, List, ListItem, ListItemText, Box, Avatar, Typography } from '@mui/material';
 import StockSystem from './Estoque/StockSystem';
 import HomePage from './Home/HomePage';
+import axios from 'axios';
 
 const drawerWidth = 240;
 
 function App() {
-  const [items, setItems] = useState([
-    { name: 'Paracetamol', quantity: 20 },
-    { name: 'Ibuprofeno', quantity: 15 },
-  ]);
+
+  
+  const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState('Home');
+  
+  axios.get("http://localhost:3000/estoque")
+    .then(response => {
+    setItems(response.data);
+    })
+    .catch(error => {
+    console.error("Erro ao buscar dados", error);
+    });
 
   const handleNavigation = (page) => {
     setCurrentPage(page);
