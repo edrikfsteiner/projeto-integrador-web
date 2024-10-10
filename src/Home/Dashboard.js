@@ -3,9 +3,11 @@ import { Drawer, List, ListItem, ListItemText, ListItemIcon, Box, Avatar, Typogr
 import { useNavigate } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import ClientIcon from '@mui/icons-material/People';
 import LogoutIcon from '@mui/icons-material/Logout';
 import StockSystem from '../Estoque/StockSystem';
 import HomePage from './HomePage';
+import ClientSystem from '../Clientes/ClientSystem';
 
 const drawerWidth = 240;
 
@@ -19,6 +21,10 @@ const Dashboard = () => {
   const [tempUserInfo, setTempUserInfo] = useState({ username: '', email: '', password: '' });
   const navigate = useNavigate();
   
+  const [clients, setClients] = useState([
+    { name: 'João Silva', email: 'joao@gmail.com', phone: '9999-9999' }
+  ]);
+
   // Obtendo o usuário logado e suas informações do localStorage
   const user = JSON.parse(localStorage.getItem('users')).find(u => u.username === localStorage.getItem('loggedInUser'));
 
@@ -104,7 +110,13 @@ const Dashboard = () => {
             <ListItemIcon>
               <InventoryIcon />
             </ListItemIcon>
-            <ListItemText primary="Sistema de Estoque" />
+            <ListItemText primary="Estoque" />
+          </ListItem>
+          <ListItem button onClick={() => handleNavigation('Clientes')}>
+            <ListItemIcon>
+              <ClientIcon />
+            </ListItemIcon>
+            <ListItemText primary="Clientes" />
           </ListItem>
           <ListItem button onClick={handleLogout}>
             <ListItemIcon>
@@ -126,6 +138,7 @@ const Dashboard = () => {
       >
         {currentPage === 'Home' && <HomePage items={items} />}
         {currentPage === 'Estoque' && <StockSystem items={items} setItems={setItems} />}
+        {currentPage === 'Clientes' && <ClientSystem clients={clients} setClients={setClients} />}
       </Box>
 
       <Dialog open={openModal} onClose={handleCancel}>
