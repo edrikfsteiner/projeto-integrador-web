@@ -20,7 +20,6 @@ import AddIcon from '@mui/icons-material/Add';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import axios from 'axios';
 
 const style = {
   position: 'absolute',
@@ -46,9 +45,7 @@ const confirmDeleteStyle = {
   p: 3,
 };
 
-
 function StockSystem({ items, setItems }) {
-
   const [open, setOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -57,76 +54,27 @@ function StockSystem({ items, setItems }) {
   const [itemToEdit, setItemToEdit] = useState(null);
   const [itemDetails, setItemDetails] = useState(null);
   const [newItem, setNewItem] = useState({
-    nome: '',
-    quantidade: '',
-    valor: '',
-    categoria: '',
-    laboratorio: '',
-    farmacia_pop: false,
-    receita: false,
+    name: '',
+    quantity: '',
+    value: '',
+    category: '',
+    lab: '',
+    pharmacyTop: false,
+    prescription: false,
   });
-
-  async function PostData() {
-	try {
-		const response = await axios.post('http://localhost:3000/estoque', {
-			nome: newItem.nome,
-			quantidade: newItem.quantidade,
-			valor: newItem.valor,
-			categoria: newItem.categoria,
-			laboratorio: newItem.laboratorio,
-			farmacia_pop: newItem.farmacia_pop,
-			receita: newItem.receita,
-		});
-
-		console.log('Usuário criado:', response.data);
-	  } catch (error) {
-		console.error('Erro ao criar usuário:', error);
-	  }
-  }
-
-  async function DelData(itemId) {
-	try {
-		const response = await axios.delete(`http://localhost:3000/estoque/${itemId}`);
-
-		console.log('Usuário criado:', response.data);
-	  } catch (error) {
-		console.error('Erro ao criar usuário:', error);
-	  }
-  }
-
-  async function PutData(item) {
-	try {
-		const response = await axios.put(`http://localhost:3000/estoque/${item.id}`, {
-			nome: item.nome,
-			quantidade: item.quantidade,
-			valor: item.valor,
-			categoria: item.categoria,
-			laboratorio: item.laboratorio,
-			farmacia_pop: item.farmacia_pop,
-			receita: item.receita,
-		});
-
-		console.log('Usuário criado:', response.data);
-	  } catch (error) {
-		console.error('Erro ao criar usuário:', error);
-	  }
-  }
-  
 
   const [editItem, setEditItem] = useState({});
 
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false) ;
-
-  const handleOpenConfirmDelete = (item) => {
-    setItemToDelete(item);
+  const handleClose = () => setOpen(false);
+  const handleOpenConfirmDelete = (index) => {
+    setItemToDelete(index);
     setConfirmDelete(true);
   };
   const handleCloseConfirmDelete = () => setConfirmDelete(false);
-
-  const handleOpenEditModal = (item) => {
-    setItemToEdit(item);
-    setEditItem(item);
+  const handleOpenEditModal = (index) => {
+    setItemToEdit(index);
+    setEditItem(items[index]);
     setEditModalOpen(true);
   };
   const handleCloseEditModal = () => setEditModalOpen(false);
@@ -140,29 +88,26 @@ function StockSystem({ items, setItems }) {
   const handleAddItem = () => {
     setItems([...items, newItem]);
     setNewItem({
-		nome: '',
-		quantidade: '',
-		valor: '',
-		categoria: '',
-		laboratorio: '',
-		farmacia_pop: false,
-		receita: false,
+      name: '',
+      quantity: '',
+      value: '',
+      category: '',
+      lab: '',
+      pharmacyTop: false,
+      prescription: false,
     });
-	PostData()
     handleClose();
   };
 
   const handleDeleteItem = () => {
     const updatedItems = items.filter((_, i) => i !== itemToDelete);
     setItems(updatedItems);
-	DelData(itemToDelete.id)
     handleCloseConfirmDelete();
   };
 
   const handleSaveEdit = () => {
     const updatedItems = [...items];
     updatedItems[itemToEdit] = editItem;
-	PutData(editItem)
     setItems(updatedItems);
     handleCloseEditModal();
   };
@@ -183,27 +128,27 @@ function StockSystem({ items, setItems }) {
 					key={index}
 					secondaryAction={
 						<>
-						<IconButton edge="end" aria-label="edit" onClick={() => handleOpenEditModal(item)}>
+						<IconButton edge="end" aria-label="edit" onClick={() => handleOpenEditModal(index)}>
 							<EditIcon />
 						</IconButton>
-						<IconButton edge="end" aria-label="delete" onClick={() => handleOpenConfirmDelete(item)}>
+						<IconButton edge="end" aria-label="delete" onClick={() => handleOpenConfirmDelete(index)}>
 							<DeleteIcon />
 						</IconButton>
 						</>
 					}
 				>
 					<ListItemAvatar>
-						<Avatar onClick={() => handleOpenDetailsModal(item)}  style={{ cursor: 'pointer' }}>
+						<Avatar onClick={() => handleOpenDetailsModal(item)} style={{ cursor: 'pointer' }}>
 							<InventoryIcon />
 						</Avatar>
 					</ListItemAvatar>
 					<ListItemText
-						primary={item.nome}
+						primary={item.name}
 						secondary={
 						<>
-							Quantidade: {item.quantidade} <br />
-							Valor: R${Number(item.valor) ? Number(item.valor).toFixed(2) : '0.00'} <br />
-							Categoria: {item.categoria}
+							Quantidade: {item.quantity} <br />
+							Valor: R${Number(item.value) ? Number(item.value).toFixed(2) : '0.00'} <br />
+							Categoria: {item.category}
 						</>
 						}
 					/>
@@ -230,32 +175,32 @@ function StockSystem({ items, setItems }) {
 				<TextField
 					fullWidth
 					label="Nome do Item"
-					value={newItem.nome}
-					onChange={(e) => setNewItem({ ...newItem, nome: e.target.value })}
+					value={newItem.name}
+					onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
 					sx={{ mb: 2 }}
 				/>
 				<TextField
 					fullWidth
 					label="Quantidade"
 					type="number"
-					value={newItem.quantidade}
-					onChange={(e) => setNewItem({ ...newItem, quantidade: e.target.value })}
+					value={newItem.quantity}
+					onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
 					sx={{ mb: 2 }}
 				/>
 				<TextField
 					fullWidth
 					label="Valor (R$)"
 					type="number"
-					value={newItem.valor}
-					onChange={(e) => setNewItem({ ...newItem, valor: e.target.value })}
+					value={newItem.value}
+					onChange={(e) => setNewItem({ ...newItem, value: e.target.value })}
 					sx={{ mb: 2 }}
 				/>
 				<TextField
 					fullWidth
 					select
 					label="Categoria"
-					value={newItem.categoria}
-					onChange={(e) => setNewItem({ ...newItem, categoria: e.target.value })}
+					value={newItem.category}
+					onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
 					sx={{ mb: 2 }}
 				>
 					<MenuItem value="Medicamento">Medicamento</MenuItem>
@@ -266,15 +211,15 @@ function StockSystem({ items, setItems }) {
 				<TextField
 					fullWidth
 					label="Laboratório"
-					value={newItem.laboratorio}
-					onChange={(e) => setNewItem({ ...newItem, laboratorio: e.target.value })}
+					value={newItem.lab}
+					onChange={(e) => setNewItem({ ...newItem, lab: e.target.value })}
 					sx={{ mb: 2 }}
 				/>
 				<FormControlLabel
 					control={
 					<Checkbox
-						checked={newItem.farmacia_pop}
-						onChange={(e) => setNewItem({ ...newItem, farmacia_pop: e.target.checked })}
+						checked={newItem.pharmacyTop}
+						onChange={(e) => setNewItem({ ...newItem, pharmacyTop: e.target.checked })}
 					/>
 					}
 					label="Farmácia Top"
@@ -283,8 +228,8 @@ function StockSystem({ items, setItems }) {
 				<FormControlLabel
 					control={
 					<Checkbox
-						checked={newItem.receita}
-						onChange={(e) => setNewItem({ ...newItem, receita: e.target.checked })}
+						checked={newItem.prescription}
+						onChange={(e) => setNewItem({ ...newItem, prescription: e.target.checked })}
 					/>
 					}
 					label="Requer Receita"
@@ -330,32 +275,32 @@ function StockSystem({ items, setItems }) {
 				<TextField
 					fullWidth
 					label="Nome do Item"
-					value={editItem.nome || ''}
-					onChange={(e) => setEditItem({ ...editItem, nome: e.target.value })}
+					value={editItem.name || ''}
+					onChange={(e) => setEditItem({ ...editItem, name: e.target.value })}
 					sx={{ mb: 2 }}
 				/>
 				<TextField
 					fullWidth
 					label="Quantidade"
 					type="number"
-					value={editItem.quantidade || ''}
-					onChange={(e) => setEditItem({ ...editItem, quantidade: e.target.value })}
+					value={editItem.quantity || ''}
+					onChange={(e) => setEditItem({ ...editItem, quantity: e.target.value })}
 					sx={{ mb: 2 }}
 				/>
 				<TextField
 					fullWidth
 					label="Valor (R$)"
 					type="number"
-					value={editItem.valor || ''}
-					onChange={(e) => setEditItem({ ...editItem, valor: e.target.value })}
+					value={editItem.value || ''}
+					onChange={(e) => setEditItem({ ...editItem, value: e.target.value })}
 					sx={{ mb: 2 }}
 				/>
 				<TextField
 					fullWidth
 					select
 					label="Categoria"
-					value={editItem.categoria || ''}
-					onChange={(e) => setEditItem({ ...editItem, categoria: e.target.value })}
+					value={editItem.category || ''}
+					onChange={(e) => setEditItem({ ...editItem, category: e.target.value })}
 					sx={{ mb: 2 }}
 				>
 					<MenuItem value="Medicamento">Medicamento</MenuItem>
@@ -366,15 +311,15 @@ function StockSystem({ items, setItems }) {
 				<TextField
 					fullWidth
 					label="Laboratório"
-					value={editItem.laboratorio || ''}
-					onChange={(e) => setEditItem({ ...editItem, laboratorio: e.target.value })}
+					value={editItem.lab || ''}
+					onChange={(e) => setEditItem({ ...editItem, lab: e.target.value })}
 					sx={{ mb: 2 }}
 				/>
 				<FormControlLabel
 					control={
 					<Checkbox
-						checked={editItem.farmacia_pop || false}
-						onChange={(e) => setEditItem({ ...editItem, farmacia_pop: e.target.checked })}
+						checked={editItem.pharmacyTop || false}
+						onChange={(e) => setEditItem({ ...editItem, pharmacyTop: e.target.checked })}
 					/>
 					}
 					label="Farmácia Top"
@@ -383,8 +328,8 @@ function StockSystem({ items, setItems }) {
 				<FormControlLabel
 					control={
 					<Checkbox
-						checked={editItem.receita || false}
-						onChange={(e) => setEditItem({ ...editItem, receita: e.target.checked })}
+						checked={editItem.prescription || false}
+						onChange={(e) => setEditItem({ ...editItem, prescription: e.target.checked })}
 					/>
 					}
 					label="Requer Receita"
@@ -410,7 +355,7 @@ function StockSystem({ items, setItems }) {
 					<TextField
 					fullWidth
 					label="Nome do Item"
-					value={itemDetails.nome}
+					value={itemDetails.name}
 					InputProps={{
 						readOnly: true, 
 					}}
@@ -420,7 +365,7 @@ function StockSystem({ items, setItems }) {
 					fullWidth
 					label="Quantidade"
 					type="number"
-					value={itemDetails.quantidade}
+					value={itemDetails.quantity}
 					InputProps={{
 						readOnly: true, 
 					}}
@@ -430,7 +375,7 @@ function StockSystem({ items, setItems }) {
 					fullWidth
 					label="Valor (R$)"
 					type="number"
-					value={Number(itemDetails.valor) ? Number(itemDetails.valor).toFixed(2) : '0.00'}
+					value={Number(itemDetails.value) ? Number(itemDetails.value).toFixed(2) : '0.00'}
 					InputProps={{
 						readOnly: true, 
 					}}
@@ -440,7 +385,7 @@ function StockSystem({ items, setItems }) {
 					fullWidth
 					select
 					label="Categoria"
-					value={itemDetails.categoria}
+					value={itemDetails.category}
 					InputProps={{
 						readOnly: true, 
 					}}
@@ -454,7 +399,7 @@ function StockSystem({ items, setItems }) {
 					<TextField
 					fullWidth
 					label="Laboratório"
-					value={itemDetails.laboratorio}
+					value={itemDetails.lab}
 					InputProps={{
 						readOnly: true, 
 					}}
@@ -463,7 +408,7 @@ function StockSystem({ items, setItems }) {
 					<FormControlLabel
 					control={
 						<Checkbox
-						checked={itemDetails.farmacia_pop}
+						checked={itemDetails.pharmacyTop}
 						readOnly 
 						/>
 					}
@@ -473,7 +418,7 @@ function StockSystem({ items, setItems }) {
 					<FormControlLabel
 					control={
 						<Checkbox
-						checked={itemDetails.receita}
+						checked={itemDetails.prescription}
 						readOnly 
 						/>
 					}

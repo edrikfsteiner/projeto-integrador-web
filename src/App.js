@@ -1,88 +1,20 @@
-import React, { useState } from 'react';
-import { Drawer, List, ListItem, ListItemText, Box, Avatar, Typography } from '@mui/material';
-import StockSystem from './Estoque/StockSystem';
-import HomePage from './Home/HomePage';
-import axios from 'axios';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './Login/Login';
+import Register from './Login/Register';
+import Dashboard from './Home/Dashboard';
 
-const drawerWidth = 240;
-
-function App() {
-
-  
-  const [items, setItems] = useState([]);
-  const [currentPage, setCurrentPage] = useState('Home');
-  
-  axios.get("http://localhost:3000/estoque")
-    .then(response => {
-    setItems(response.data);
-    })
-    .catch(error => {
-    console.error("Erro ao buscar dados", error);
-    });
-
-  const handleNavigation = (page) => {
-    setCurrentPage(page);
-  };
-
+const App = () => {
   return (
-    <Box sx={{ display: 'flex' }}>
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-            backgroundColor: '#f0f4f8',
-            color: '#333',
-          },
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            flexDirection: 'column',
-            padding: '20px',
-            backgroundColor: '#e3eaf3',
-            borderBottom: '1px solid #ccc',
-          }}
-        >
-          <Avatar
-            alt="Usuário"
-            src="https://cdn-icons-png.flaticon.com/512/61/61173.png"
-            sx={{ width: 100, height: 100 }}
-          />
-          <Typography variant="h6" sx={{ marginTop: 2 }}>
-            Nome do Usuário
-          </Typography>
-        </Box>
-
-        <List>
-          <ListItem button onClick={() => handleNavigation('Home')}>
-            <ListItemText primary="Página Inicial" />
-          </ListItem>
-          <ListItem button onClick={() => handleNavigation('Estoque')}>
-            <ListItemText primary="Sistema de Estoque" />
-          </ListItem>
-        </List>
-      </Drawer>
-
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          backgroundColor: '#ffffff',
-          minHeight: '100vh',
-        }}
-      >
-        {currentPage === 'Home' && <HomePage items={items} />}
-        {currentPage === 'Estoque' && <StockSystem items={items} setItems={setItems} />}
-      </Box>
-    </Box>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
