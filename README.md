@@ -9,7 +9,7 @@
 
 <br>
   
-## Sistema de Estoque para Farmácias
+## Sistema de Estoque para Drogarias
 
 ### Objetivos do sistema:
 - Fornecer um sistema com uma interface intuitiva e fácil de usar <br>
@@ -20,17 +20,14 @@
 
 <br>
 
-### Mockup 
-- [Figma](https://www.figma.com/design/ReeelkRsRgmTHFNUQaWGjs/Untitled?node-id=0-1&t=H2iFsoy8EckTBAQ4-1)
-
-<br>
-
-###  Tecnologias utilizadas no Desenvolvimento do Projeto
+### Tecnologias utilizadas no Desenvolvimento do Projeto
 - Frontend: React
 - Backend: Node.js
 - Banco de Dados: PostgreSQL
 
 <br>
 
-### Ferramenta utilizada no Gerenciamento do Projeto
-- Trello
+### Ferramentas utilizadas no Projeto
+- [Trello](https://trello.com/b/KBp3WvpU/projeto-integrador-web)
+- [Figma](https://www.figma.com/design/ReeelkRsRgmTHFNUQaWGjs/Untitled?node-id=0-1&t=H2iFsoy8EckTBAQ4-1)
+- [Repositório Backend](https://github.com/f5joaodanieldeliz/backendDrogaria)
