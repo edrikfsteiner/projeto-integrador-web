@@ -41,11 +41,15 @@ function ClientSystem({ clients, setClients }) {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
   const handleOpenEditModal = (index) => {
-    setClientToEdit(index);
-    setEditClient(clients[index]);
-    setEditModalOpen(true);
+    if (index >= 0 && index < clients.length) { // Verifica se o índice existe
+      setClientToEdit(index);
+      setEditClient(clients[index]);
+      setEditModalOpen(true);
+    }
   };
+
   const handleCloseEditModal = () => setEditModalOpen(false);
 
   const handleOpenDetailsModal = (client) => {
@@ -55,9 +59,13 @@ function ClientSystem({ clients, setClients }) {
   const handleCloseDetailsModal = () => setDetailsModalOpen(false);
 
   const handleAddClient = () => {
-    setClients([...clients, newClient]);
-    setNewClient({ name: '', email: '', phone: '' });
-    handleClose();
+    if (newClient.name && newClient.email && newClient.phone) {
+      setClients([...clients, newClient]);
+      setNewClient({ name: '', email: '', phone: '' });
+      handleClose();
+    } else {
+      alert("Por favor, preencha todos os campos.");
+    }
   };
 
   const handleDeleteClient = (index) => {

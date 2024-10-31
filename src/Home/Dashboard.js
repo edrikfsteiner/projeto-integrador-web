@@ -1,13 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Drawer, List, ListItem, ListItemText, ListItemIcon, Box, Avatar, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Box,
+  Avatar,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import ClientIcon from '@mui/icons-material/People';
+import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
+import ReportIcon from '@mui/icons-material/Assessment'; // Importando ícone de relatório
 import LogoutIcon from '@mui/icons-material/Logout';
 import StockSystem from '../Estoque/StockSystem';
-import HomePage from './HomePage';
 import ClientSystem from '../Clientes/ClientSystem';
+import PhoneBook from '../Agenda/PhoneBook';
+import HomePage from './HomePage';
+import ReportPage from '../ReportVendas/ReportPage'; // Importando o novo componente de relatório
 
 const drawerWidth = 240;
 
@@ -16,21 +35,25 @@ const Dashboard = () => {
     { name: 'Paracetamol', quantity: 20 },
     { name: 'Ibuprofeno', quantity: 15 },
   ]);
+  const [clients, setClients] = useState([
+    { name: 'João Silva', email: 'joao@gmail.com', phone: '9999-9999' },
+  ]);
+  const [contacts, setContacts] = useState([
+    { name: 'Maria Souza', phone: '(11) 99999-9999', email: 'maria@example.com' },
+    { name: 'Pedro Lima', phone: '(21) 88888-8888', email: 'pedro@example.com' },
+  ]);
   const [currentPage, setCurrentPage] = useState('Home');
   const [openModal, setOpenModal] = useState(false); 
   const [tempUserInfo, setTempUserInfo] = useState({ username: '', email: '', password: '' });
   const navigate = useNavigate();
-  
-  const [clients, setClients] = useState([
-    { name: 'João Silva', email: 'joao@gmail.com', phone: '9999-9999' }
-  ]);
 
-  // Obtendo o usuário logado e suas informações do localStorage
-  const user = JSON.parse(localStorage.getItem('users')).find(u => u.username === localStorage.getItem('loggedInUser'));
+  const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
+  const loggedInUser = localStorage.getItem('loggedInUser');
+  const user = storedUsers.find(u => u.username === loggedInUser);
 
   useEffect(() => {
     if (user) {
-      setTempUserInfo(user); // Definindo as informações reais no estado
+      setTempUserInfo(user);
     }
   }, [user]);
 
@@ -39,27 +62,25 @@ const Dashboard = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('loggedInUser'); // Remover o usuário logado
-    navigate('/'); // Redirecionar para a página de login
+    localStorage.removeItem('loggedInUser');
+    navigate('/');
   };
 
   const handleAvatarClick = () => {
-    setOpenModal(true); // Abrir o modal de edição
+    setOpenModal(true);
   };
 
   const handleSave = () => {
-    // Atualizar o usuário no localStorage
-    const updatedUsers = JSON.parse(localStorage.getItem('users')).map(u =>
+    const updatedUsers = storedUsers.map(u =>
       u.username === user.username ? { ...tempUserInfo } : u
     );
     localStorage.setItem('users', JSON.stringify(updatedUsers));
-    localStorage.setItem('loggedInUser', tempUserInfo.username); // Atualizar o nome de usuário logado
-
-    setOpenModal(false); // Fechar o modal
+    localStorage.setItem('loggedInUser', tempUserInfo.username);
+    setOpenModal(false);
   };
 
   const handleCancel = () => {
-    setOpenModal(false); // Fechar o modal sem salvar
+    setOpenModal(false);
   };
 
   return (
@@ -87,7 +108,7 @@ const Dashboard = () => {
             borderBottom: '1px solid #ccc',
             cursor: 'pointer'
           }}
-          onClick={handleAvatarClick} // Abrir modal ao clicar no avatar
+          onClick={handleAvatarClick}
         >
           <Avatar
             alt={tempUserInfo.username}
@@ -118,6 +139,18 @@ const Dashboard = () => {
             </ListItemIcon>
             <ListItemText primary="Clientes" />
           </ListItem>
+          <ListItem button onClick={() => handleNavigation('Agenda')}>
+            <ListItemIcon>
+              <ContactPhoneIcon />
+            </ListItemIcon>
+            <ListItemText primary="Agenda Telefônica" />
+          </ListItem>
+          <ListItem button onClick={() => handleNavigation('Relatorio')}>
+            <ListItemIcon>
+              <ReportIcon />
+            </ListItemIcon>
+            <ListItemText primary="Relatório" />
+          </ListItem>
           <ListItem button onClick={handleLogout}>
             <ListItemIcon>
               <LogoutIcon />
@@ -127,50 +160,45 @@ const Dashboard = () => {
         </List>
       </Drawer>
 
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          backgroundColor: '#ffffff',
-          minHeight: '100vh',
-        }}
-      >
-        {currentPage === 'Home' && <HomePage items={items} />}
+      <Box sx={{ flexGrow: 1, p: 3 }}>
+        {currentPage === 'Home' && <HomePage items={items} contacts={contacts} clients={clients} />}
         {currentPage === 'Estoque' && <StockSystem items={items} setItems={setItems} />}
         {currentPage === 'Clientes' && <ClientSystem clients={clients} setClients={setClients} />}
+        {currentPage === 'Agenda' && <PhoneBook contacts={contacts} />}
+        {currentPage === 'Relatorio' && <ReportPage items={items} contacts={contacts} clients={clients} />} {/* Adicionando a nova página de relatório */}
       </Box>
 
       <Dialog open={openModal} onClose={handleCancel}>
-        <DialogTitle>Editar Informações do Usuário</DialogTitle>
+        <DialogTitle>Editar Perfil</DialogTitle>
         <DialogContent>
           <TextField
-            margin="dense"
             label="Nome de Usuário"
             fullWidth
+            margin="normal"
             value={tempUserInfo.username}
             onChange={(e) => setTempUserInfo({ ...tempUserInfo, username: e.target.value })}
           />
           <TextField
-            margin="dense"
-            label="E-mail"
-            type="email"
+            label="Email"
             fullWidth
+            margin="normal"
             value={tempUserInfo.email}
             onChange={(e) => setTempUserInfo({ ...tempUserInfo, email: e.target.value })}
           />
           <TextField
-            margin="dense"
             label="Senha"
-            type="password"
             fullWidth
+            margin="normal"
+            type="password"
             value={tempUserInfo.password}
             onChange={(e) => setTempUserInfo({ ...tempUserInfo, password: e.target.value })}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel} color="secondary">Cancelar</Button>
-          <Button onClick={handleSave} color="primary">Salvar</Button>
+          <Button onClick={handleCancel}>Cancelar</Button>
+          <Button onClick={handleSave} variant="contained" color="primary">
+            Salvar
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
