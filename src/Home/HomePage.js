@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Box, Card, CardContent, Typography, Grid } from '@mui/material';
 
 const HomePage = ({ items, contacts, clients }) => {
-  // Verifica e calcula o total de itens no estoque, garantindo que todos os valores sejam numéricos.
   const totalItems = items.reduce((total, item) => total + Number(item.quantity || 0), 0);
-  const lowStockItems = items.filter(item => item.quantity < 10); // Produtos com estoque abaixo de 10 unidades.
+  const lowStockItems = items.filter(item => item.quantity < 10);
   const totalContacts = contacts.length;
   const totalClients = clients.length;
 
-  // Pegando o nome do usuário logado
   const [user, setUser] = useState({});
 
   useEffect(() => {
@@ -38,11 +36,11 @@ const HomePage = ({ items, contacts, clients }) => {
           </Card>
         </Grid>
 
-        {/* Resumo do Sistema de Agenda Telefônica */}
+        {/* Resumo do Sistema de Agenda */}
         <Grid item xs={12} sm={4}>
           <Card sx={{ backgroundColor: '#e6ffe6' }}>
             <CardContent>
-              <Typography variant="h6">Resumo da Agenda Telefônica</Typography>
+              <Typography variant="h6">Resumo da Agenda</Typography>
               <Typography variant="body1">Total de Contatos: {totalContacts}</Typography>
             </CardContent>
           </Card>

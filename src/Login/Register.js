@@ -30,7 +30,7 @@ const Register = () => {
       <h2>Registrar</h2>
       <form onSubmit={handleSubmit}>
         <div style={styles.formGroup}>
-          <label>Nome de Usuário:</label>
+          <label>Usuário:</label>
           <input 
             type="text" 
             value={username} 
@@ -50,7 +50,7 @@ const Register = () => {
           />
         </div>
         <div style={styles.formGroup}>
-          <label>Password:</label>
+          <label>Senha:</label>
           <input 
             type="password" 
             value={password} 

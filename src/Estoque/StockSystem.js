@@ -119,18 +119,17 @@ function StockSystem({ items, setItems }) {
     handleCloseEditModal();
   };
 
-  // Detecta apenas o primeiro item com quantidade abaixo de 5
   useEffect(() => {
     const lowStockItems = items.filter(item => item.quantity < 5);
     if (lowStockItems.length > 0 && (!lowStockItem || lowStockItems[0].name !== lowStockItem.name)) {
-      setLowStockItem(lowStockItems[0]); // Exibe apenas o primeiro item com estoque baixo
+      setLowStockItem(lowStockItems[0]);
       setLowStockModalOpen(true);
     }
-  }, [items]); // Executa sempre que a lista de itens muda
+  }, [items]);
 
   const handleCloseLowStockModal = () => {
     setLowStockModalOpen(false);
-    setLowStockItem(null); // Reseta o item de estoque baixo ao fechar
+    setLowStockItem(null);
   };
 
   return (
@@ -249,7 +248,7 @@ function StockSystem({ items, setItems }) {
                 onChange={(e) => setNewItem({ ...newItem, pharmacyTop: e.target.checked })}
               />
             }
-            label="Farmácia Top"
+            label="Farmácia Popular"
             sx={{ mb: 2 }}
           />
           <FormControlLabel
@@ -259,7 +258,7 @@ function StockSystem({ items, setItems }) {
                 onChange={(e) => setNewItem({ ...newItem, prescription: e.target.checked })}
               />
             }
-            label="Requer Receita"
+            label="Requer Receita?"
             sx={{ mb: 2 }}
           />
           <Button
@@ -268,18 +267,6 @@ function StockSystem({ items, setItems }) {
             onClick={handleAddItem}
           >
             Adicionar
-          </Button>
-        </Box>
-      </Modal>
-
-      {/* Modal de confirmação de exclusão */}
-      <Modal open={confirmDelete} onClose={handleCloseConfirmDelete}>
-        <Box sx={confirmDeleteStyle}>
-          <Typography variant="h6" gutterBottom>
-            Tem certeza que deseja excluir este item?
-          </Typography>
-          <Button variant="contained" color="error" onClick={handleDeleteItem}>
-            Excluir
           </Button>
         </Box>
       </Modal>
@@ -340,7 +327,7 @@ function StockSystem({ items, setItems }) {
                 onChange={(e) => setEditItem({ ...editItem, pharmacyTop: e.target.checked })}
               />
             }
-            label="Farmácia Top"
+            label="Farmácia Popular"
             sx={{ mb: 2 }}
           />
           <FormControlLabel
@@ -350,7 +337,7 @@ function StockSystem({ items, setItems }) {
                 onChange={(e) => setEditItem({ ...editItem, prescription: e.target.checked })}
               />
             }
-            label="Requer Receita"
+            label="Requer Receita?"
             sx={{ mb: 2 }}
           />
           <Button
@@ -359,6 +346,18 @@ function StockSystem({ items, setItems }) {
             onClick={handleSaveEdit}
           >
             Salvar
+          </Button>
+        </Box>
+      </Modal>
+
+      {/* Modal de exclusão */}
+      <Modal open={confirmDelete} onClose={handleCloseConfirmDelete}>
+        <Box sx={confirmDeleteStyle}>
+          <Typography variant="h6" gutterBottom>
+            Tem certeza que deseja excluir este item?
+          </Typography>
+          <Button variant="contained" color="error" onClick={handleDeleteItem}>
+            Excluir
           </Button>
         </Box>
       </Modal>
@@ -377,10 +376,10 @@ function StockSystem({ items, setItems }) {
               <Typography variant="body1">Categoria: {itemDetails.category}</Typography>
               <Typography variant="body1">Laboratório: {itemDetails.lab}</Typography>
               <Typography variant="body1">
-                Farmácia Top: {itemDetails.pharmacyTop ? 'Sim' : 'Não'}
+                Farmácia Popular: {itemDetails.pharmacyTop ? 'Sim' : 'Não'}
               </Typography>
               <Typography variant="body1">
-                Requer Receita: {itemDetails.prescription ? 'Sim' : 'Não'}
+                Requer Receita?: {itemDetails.prescription ? 'Sim' : 'Não'}
               </Typography>
             </>
           )}

@@ -43,7 +43,7 @@ function ClientSystem({ clients, setClients }) {
   const handleClose = () => setOpen(false);
 
   const handleOpenEditModal = (index) => {
-    if (index >= 0 && index < clients.length) { // Verifica se o índice existe
+    if (index >= 0 && index < clients.length) {
       setClientToEdit(index);
       setEditClient(clients[index]);
       setEditModalOpen(true);

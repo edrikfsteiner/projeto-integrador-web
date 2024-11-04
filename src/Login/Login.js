@@ -34,7 +34,7 @@ const Login = () => {
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div style={styles.formGroup}>
-          <label>Nome de Usuário:</label>
+          <label>Usuário:</label>
           <input 
             type="text" 
             value={username} 
@@ -44,7 +44,7 @@ const Login = () => {
           />
         </div>
         <div style={styles.formGroup}>
-          <label>Password:</label>
+          <label>Senha:</label>
           <input 
             type="password" 
             value={password} 
@@ -60,13 +60,8 @@ const Login = () => {
 
       <Dialog open={openModal} onClose={handleClose}>
         <DialogTitle>
-          <Typography variant="h5" align="center">Bem-vindo(a)!</Typography>
+          <Typography variant="h5" align="center">Bem-vindo(a), <strong>{username}</strong>!</Typography>
         </DialogTitle>
-        <DialogContent>
-          <Typography align="center" variant="body1">
-            Seja bem-vindo(a) ao sistema <strong>{username}</strong>!
-          </Typography>
-        </DialogContent>
         <DialogActions style={{ justifyContent: 'center' }}>
           <Button 
             onClick={handleClose} 

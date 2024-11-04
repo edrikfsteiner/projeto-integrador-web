@@ -20,13 +20,13 @@ import HomeIcon from '@mui/icons-material/Home';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import ClientIcon from '@mui/icons-material/People';
 import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
-import ReportIcon from '@mui/icons-material/Assessment'; // Importando ícone de relatório
+import ReportIcon from '@mui/icons-material/Assessment';
 import LogoutIcon from '@mui/icons-material/Logout';
 import StockSystem from '../Estoque/StockSystem';
 import ClientSystem from '../Clientes/ClientSystem';
 import PhoneBook from '../Agenda/PhoneBook';
 import HomePage from './HomePage';
-import ReportPage from '../ReportVendas/ReportPage'; // Importando o novo componente de relatório
+import ReportPage from '../ReportVendas/ReportPage';
 
 const drawerWidth = 240;
 
@@ -143,7 +143,7 @@ const Dashboard = () => {
             <ListItemIcon>
               <ContactPhoneIcon />
             </ListItemIcon>
-            <ListItemText primary="Agenda Telefônica" />
+            <ListItemText primary="Agenda" />
           </ListItem>
           <ListItem button onClick={() => handleNavigation('Relatorio')}>
             <ListItemIcon>
@@ -172,7 +172,7 @@ const Dashboard = () => {
         <DialogTitle>Editar Perfil</DialogTitle>
         <DialogContent>
           <TextField
-            label="Nome de Usuário"
+            label="Usuário"
             fullWidth
             margin="normal"
             value={tempUserInfo.username}
