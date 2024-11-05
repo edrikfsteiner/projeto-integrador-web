@@ -82,6 +82,19 @@ function ClientSystem({ clients, setClients }) {
 
   const isValidText = (value) => /^[A-Za-záéíóúàèìòùâêîôûãõçÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ\s]+$/.test(value);
 
+  const isValidEmail = (email) => {
+    const regex = /^[a-zA-Z0-9._-]+@[a-zAZ0-9.-]+\.[a-zA-Z]{2,6}$/;
+    return regex.test(email);
+  };
+
+  const formatPhone = (value) => {
+    const onlyNumbers = value.replace(/\D/g, '');
+    if (onlyNumbers.length === 10) {
+      return `(${onlyNumbers.substring(0, 2)}) ${onlyNumbers.substring(2, 7)}-${onlyNumbers.substring(7, 11)}`;
+    }
+    return onlyNumbers;
+};
+
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
@@ -148,6 +161,7 @@ function ClientSystem({ clients, setClients }) {
           <TextField
             fullWidth
             label="Email"
+            type="email"
             value={newClient.email}
             onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
             sx={{ mb: 2 }}
@@ -156,12 +170,11 @@ function ClientSystem({ clients, setClients }) {
           <TextField
             fullWidth
             label="Celular"
-            value={newClient.phone}
+            value={formatPhone(newClient.phone)}
             onChange={(e) => {
               const value = e.target.value;
-              if (/^\d*$/.test(value)) {
-                setNewClient({ ...newClient, phone: e.target.value });
-              }
+              const numericValue = value.replace(/\D/g, '').slice(0, 10); 
+              setNewClient({ ...newClient, phone: numericValue });
             }}
             sx={{ mb: 2 }}
             required
@@ -171,9 +184,11 @@ function ClientSystem({ clients, setClients }) {
             fullWidth
             onClick={handleAddClient}
             disabled={
-              !newClient.name ||
-              !newClient.email ||
-              !newClient.phone
+              !newClient.name || 
+              !newClient.email || 
+              !newClient.phone || 
+              !isValidEmail(newClient.email) ||
+              newClient.phone.length !== 10
             }
           >
             Adicionar
@@ -201,6 +216,7 @@ function ClientSystem({ clients, setClients }) {
           <TextField
             fullWidth
             label="Email"
+            type="email"
             value={editClient.email || ''}
             onChange={(e) => setEditClient({ ...editClient, email: e.target.value })}
             sx={{ mb: 2 }}
@@ -208,12 +224,11 @@ function ClientSystem({ clients, setClients }) {
           <TextField
             fullWidth
             label="Celular"
-            value={editClient.phone || ''}
+            value={formatPhone(editClient.phone || '')}
             onChange={(e) => {
               const value = e.target.value;
-              if (/^\d*$/.test(value)) {
-                setEditClient({ ...editClient, phone: e.target.value });
-              }
+              const numericValue = value.replace(/\D/g, '').slice(0, 10); 
+              setEditClient({ ...editClient, phone: numericValue });
             }}
             sx={{ mb: 2 }}
           />
@@ -222,9 +237,11 @@ function ClientSystem({ clients, setClients }) {
             fullWidth
             onClick={handleSaveEdit}
             disabled={
-              !editClient.name ||
-              !editClient.email ||
-              !editClient.phone
+              !editClient.name || 
+              !editClient.email || 
+              !editClient.phone || 
+              !isValidEmail(editClient.email) ||
+              editClient.phone.length !== 10
             }
           >
             Salvar
