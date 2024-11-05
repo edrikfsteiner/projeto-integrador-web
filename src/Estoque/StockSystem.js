@@ -61,7 +61,7 @@ function StockSystem({ items, setItems }) {
     value: '',
     category: '',
     lab: '',
-    pharmacyTop: false,
+    pharmacyPop: false,
     prescription: false,
   });
   const [editItem, setEditItem] = useState({});
@@ -97,7 +97,7 @@ function StockSystem({ items, setItems }) {
         value: '',
         category: '',
         lab: '',
-        pharmacyTop: false,
+        pharmacyPop: false,
         prescription: false,
       });
       handleClose();
@@ -130,6 +130,23 @@ function StockSystem({ items, setItems }) {
   const handleCloseLowStockModal = () => {
     setLowStockModalOpen(false);
     setLowStockItem(null);
+  };
+
+  const isValidText = (value) => /^[A-Za-záéíóúàèìòùâêîôûãõçÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ\s]+$/.test(value);
+
+  const handleDecimalInput = (value) => {
+    let formattedValue = value.replace(',', '.');
+    const [integerPart, decimalPart] = formattedValue.split('.');
+    
+    if (decimalPart && decimalPart.length > 2) {
+      formattedValue = `${integerPart}.${decimalPart.substring(0, 2)}`;
+    }
+    
+    return formattedValue;
+  };
+
+  const handleChange = (field, value) => {
+    setNewItem({ ...newItem, [field]: value });
   };
 
   return (
@@ -169,6 +186,9 @@ function StockSystem({ items, setItems }) {
                     Quantidade: {item.quantity} <br />
                     Valor: R${Number(item.value) ? Number(item.value).toFixed(2) : '0.00'} <br />
                     Categoria: {item.category} <br />
+                    Laboratório: {item.lab} <br />
+                    Farmácia Popular: {item.pharmacyPop ? 'Sim' : 'Não'} <br />
+                    Requer Receita?: {item.prescription ? 'Sim' : 'Não'} <br />
                     {item.quantity < 5 && (
                       <Typography variant="body2" color="error">
                         <WarningIcon fontSize="small" /> Estoque Baixo
@@ -202,24 +222,42 @@ function StockSystem({ items, setItems }) {
             fullWidth
             label="Nome do Item"
             value={newItem.name}
-            onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (isValidText(value) || value === "") {
+                handleChange("name", value);
+              }
+            }}
             sx={{ mb: 2 }}
+            required
           />
           <TextField
             fullWidth
             label="Quantidade"
-            type="number"
-            value={newItem.quantity}
-            onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
+            type="text"
+            value={newItem.quantity || ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*$/.test(value)) {
+                handleChange("quantity", value === "" ? "" : parseInt(value, 10));
+              }
+            }}
             sx={{ mb: 2 }}
+            required
           />
           <TextField
             fullWidth
             label="Valor (R$)"
             type="number"
-            value={newItem.value}
-            onChange={(e) => setNewItem({ ...newItem, value: e.target.value })}
+            value={newItem.value || ''}
+            onChange={(e) => {
+              const value = handleDecimalInput(e.target.value);
+              if (!value || !isNaN(parseFloat(value))) {
+                handleChange("value", value === "" ? "" : parseFloat(value));
+              }
+            }}
             sx={{ mb: 2 }}
+            required
           />
           <TextField
             fullWidth
@@ -228,6 +266,7 @@ function StockSystem({ items, setItems }) {
             value={newItem.category}
             onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
             sx={{ mb: 2 }}
+            required
           >
             <MenuItem value="Medicamento">Medicamento</MenuItem>
             <MenuItem value="Cosmético">Cosmético</MenuItem>
@@ -238,14 +277,20 @@ function StockSystem({ items, setItems }) {
             fullWidth
             label="Laboratório"
             value={newItem.lab}
-            onChange={(e) => setNewItem({ ...newItem, lab: e.target.value })}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (isValidText(value) || value === "") {
+                handleChange("lab", value);
+              }
+            }}
             sx={{ mb: 2 }}
+            required
           />
           <FormControlLabel
             control={
               <Checkbox
-                checked={newItem.pharmacyTop}
-                onChange={(e) => setNewItem({ ...newItem, pharmacyTop: e.target.checked })}
+                checked={newItem.pharmacyPop}
+                onChange={(e) => setNewItem({ ...newItem, pharmacyPop: e.target.checked })}
               />
             }
             label="Farmácia Popular"
@@ -265,6 +310,13 @@ function StockSystem({ items, setItems }) {
             variant="contained"
             fullWidth
             onClick={handleAddItem}
+            disabled={
+              !newItem.name ||
+              newItem.quantity <= 0 ||
+              newItem.value <= 0 ||
+              !newItem.lab ||
+              !newItem.category
+            }
           >
             Adicionar
           </Button>
@@ -281,23 +333,38 @@ function StockSystem({ items, setItems }) {
             fullWidth
             label="Nome do Item"
             value={editItem.name}
-            onChange={(e) => setEditItem({ ...editItem, name: e.target.value })}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (isValidText(value) || value === "") {
+                setEditItem({ ...editItem, name: value });
+              }
+            }}
             sx={{ mb: 2 }}
           />
           <TextField
             fullWidth
             label="Quantidade"
-            type="number"
-            value={editItem.quantity}
-            onChange={(e) => setEditItem({ ...editItem, quantity: e.target.value })}
+            type="text"
+            value={editItem.quantity || ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*$/.test(value)) {
+                setEditItem({ ...editItem, quantity: value === "" ? "" : parseInt(value, 10) });
+              }
+            }}
             sx={{ mb: 2 }}
           />
           <TextField
             fullWidth
             label="Valor (R$)"
-            type="number"
-            value={editItem.value}
-            onChange={(e) => setEditItem({ ...editItem, value: e.target.value })}
+            type="text"
+            value={editItem.value|| ''}
+            onChange={(e) => {
+              const value = handleDecimalInput(e.target.value);
+              if (!value || !isNaN(parseFloat(value))) {
+                setEditItem({ ...editItem, value: value === "" ? "" : parseFloat(value) });
+              }
+            }}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -317,14 +384,19 @@ function StockSystem({ items, setItems }) {
             fullWidth
             label="Laboratório"
             value={editItem.lab}
-            onChange={(e) => setEditItem({ ...editItem, lab: e.target.value })}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (isValidText(value) || value === "") {
+                setEditItem({ ...editItem, lab: value });
+              }
+            }}
             sx={{ mb: 2 }}
           />
           <FormControlLabel
             control={
               <Checkbox
-                checked={editItem.pharmacyTop}
-                onChange={(e) => setEditItem({ ...editItem, pharmacyTop: e.target.checked })}
+                checked={editItem.pharmacyPop}
+                onChange={(e) => setEditItem({ ...editItem, pharmacyPop: e.target.checked })}
               />
             }
             label="Farmácia Popular"
@@ -344,6 +416,13 @@ function StockSystem({ items, setItems }) {
             variant="contained"
             fullWidth
             onClick={handleSaveEdit}
+            disabled={
+              !editItem.name ||
+              editItem.quantity <= 0 ||
+              editItem.value <= 0 ||
+              !editItem.lab ||
+              !editItem.category
+            }
           >
             Salvar
           </Button>
@@ -376,7 +455,7 @@ function StockSystem({ items, setItems }) {
               <Typography variant="body1">Categoria: {itemDetails.category}</Typography>
               <Typography variant="body1">Laboratório: {itemDetails.lab}</Typography>
               <Typography variant="body1">
-                Farmácia Popular: {itemDetails.pharmacyTop ? 'Sim' : 'Não'}
+                Farmácia Popular: {itemDetails.pharmacyPop ? 'Sim' : 'Não'}
               </Typography>
               <Typography variant="body1">
                 Requer Receita?: {itemDetails.prescription ? 'Sim' : 'Não'}

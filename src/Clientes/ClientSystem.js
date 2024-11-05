@@ -80,6 +80,8 @@ function ClientSystem({ clients, setClients }) {
     handleCloseEditModal();
   };
 
+  const isValidText = (value) => /^[A-Za-záéíóúàèìòùâêîôûãõçÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ\s]+$/.test(value);
+
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
@@ -112,7 +114,7 @@ function ClientSystem({ clients, setClients }) {
               </ListItemAvatar>
               <ListItemText
                 primary={client.name}
-                secondary={`Email: ${client.email} | Telefone: ${client.phone}`}
+                secondary={`Email: ${client.email} | Celular: ${client.phone}`}
               />
             </ListItem>
           ))}
@@ -134,8 +136,14 @@ function ClientSystem({ clients, setClients }) {
             fullWidth
             label="Nome"
             value={newClient.name}
-            onChange={(e) => setNewClient({ ...newClient, name: e.target.value })}
+            onChange={(e) => {
+              const value = e.target.value
+              if (isValidText(value) || value === "") {
+                setNewClient({ ...newClient, name: e.target.value })
+              }
+            }}
             sx={{ mb: 2 }}
+            required
           />
           <TextField
             fullWidth
@@ -143,15 +151,31 @@ function ClientSystem({ clients, setClients }) {
             value={newClient.email}
             onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
             sx={{ mb: 2 }}
+            required
           />
           <TextField
             fullWidth
-            label="Telefone"
+            label="Celular"
             value={newClient.phone}
-            onChange={(e) => setNewClient({ ...newClient, phone: e.target.value })}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*$/.test(value)) {
+                setNewClient({ ...newClient, phone: e.target.value });
+              }
+            }}
             sx={{ mb: 2 }}
+            required
           />
-          <Button variant="contained" fullWidth onClick={handleAddClient}>
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={handleAddClient}
+            disabled={
+              !newClient.name ||
+              !newClient.email ||
+              !newClient.phone
+            }
+          >
             Adicionar
           </Button>
         </Box>
@@ -166,7 +190,12 @@ function ClientSystem({ clients, setClients }) {
             fullWidth
             label="Nome"
             value={editClient.name || ''}
-            onChange={(e) => setEditClient({ ...editClient, name: e.target.value })}
+            onChange={(e) => {
+              const value = e.target.value
+              if (isValidText(value) || value === "") {
+                setEditClient({ ...editClient, name: e.target.value })
+              }
+            }}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -178,12 +207,26 @@ function ClientSystem({ clients, setClients }) {
           />
           <TextField
             fullWidth
-            label="Telefone"
+            label="Celular"
             value={editClient.phone || ''}
-            onChange={(e) => setEditClient({ ...editClient, phone: e.target.value })}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*$/.test(value)) {
+                setEditClient({ ...editClient, phone: e.target.value });
+              }
+            }}
             sx={{ mb: 2 }}
           />
-          <Button variant="contained" fullWidth onClick={handleSaveEdit}>
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={handleSaveEdit}
+            disabled={
+              !editClient.name ||
+              !editClient.email ||
+              !editClient.phone
+            }
+          >
             Salvar
           </Button>
         </Box>
@@ -216,7 +259,7 @@ function ClientSystem({ clients, setClients }) {
               />
               <TextField
                 fullWidth
-                label="Telefone"
+                label="Celular"
                 value={clientDetails.phone}
                 InputProps={{
                   readOnly: true,
