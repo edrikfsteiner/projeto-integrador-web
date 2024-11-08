@@ -1,19 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  Box,
-  Avatar,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  TextField,
+  Drawer, List, ListItem, ListItemText, ListItemIcon, Box, Avatar, Typography, Dialog,
+  DialogTitle, DialogContent, DialogActions, Button, TextField,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
@@ -21,12 +9,14 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import ClientIcon from '@mui/icons-material/People';
 import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
 import ReportIcon from '@mui/icons-material/Assessment';
+import SellIcon from '@mui/icons-material/MonetizationOn';
 import LogoutIcon from '@mui/icons-material/Logout';
 import StockSystem from '../Estoque/StockSystem';
 import ClientSystem from '../Clientes/ClientSystem';
 import PhoneBook from '../Agenda/PhoneBook';
 import HomePage from './HomePage';
 import ReportPage from '../ReportVendas/ReportPage';
+import SalesSystem from '../Vendas/SalesSystem';
 
 const drawerWidth = 240;
 
@@ -42,8 +32,9 @@ const Dashboard = () => {
     { name: 'Maria Souza', phone: '(11) 99999-9999', email: 'maria@example.com' },
     { name: 'Pedro Lima', phone: '(21) 88888-8888', email: 'pedro@example.com' },
   ]);
+  const [salesHistory, setSalesHistory] = useState([]);  // Estado do histórico de vendas
   const [currentPage, setCurrentPage] = useState('Home');
-  const [openModal, setOpenModal] = useState(false); 
+  const [openModal, setOpenModal] = useState(false);
   const [tempUserInfo, setTempUserInfo] = useState({ username: '', email: '', password: '' });
   const navigate = useNavigate();
 
@@ -127,6 +118,12 @@ const Dashboard = () => {
             </ListItemIcon>
             <ListItemText primary="Página Inicial" />
           </ListItem>
+          <ListItem button onClick={() => handleNavigation('Vendas')}>
+            <ListItemIcon>
+              <SellIcon />
+            </ListItemIcon>
+            <ListItemText primary="Vendas" />
+          </ListItem>
           <ListItem button onClick={() => handleNavigation('Estoque')}>
             <ListItemIcon>
               <InventoryIcon />
@@ -143,7 +140,7 @@ const Dashboard = () => {
             <ListItemIcon>
               <ContactPhoneIcon />
             </ListItemIcon>
-            <ListItemText primary="Agenda" />
+            <ListItemText primary="Agenda Telefônica" />
           </ListItem>
           <ListItem button onClick={() => handleNavigation('Relatorio')}>
             <ListItemIcon>
@@ -162,17 +159,18 @@ const Dashboard = () => {
 
       <Box sx={{ flexGrow: 1, p: 3 }}>
         {currentPage === 'Home' && <HomePage items={items} contacts={contacts} clients={clients} />}
+        {currentPage === 'Vendas' && <SalesSystem items={items} contacts={contacts} clients={clients} setSalesHistory={setSalesHistory} />}
         {currentPage === 'Estoque' && <StockSystem items={items} setItems={setItems} />}
         {currentPage === 'Clientes' && <ClientSystem clients={clients} setClients={setClients} />}
         {currentPage === 'Agenda' && <PhoneBook contacts={contacts} />}
-        {currentPage === 'Relatorio' && <ReportPage items={items} contacts={contacts} clients={clients} />} {/* Adicionando a nova página de relatório */}
+        {currentPage === 'Relatorio' && <ReportPage items={items} contacts={contacts} clients={clients} salesHistory={salesHistory} user={user} />}
       </Box>
 
       <Dialog open={openModal} onClose={handleCancel}>
-        <DialogTitle>Informações de Usuário</DialogTitle>
+        <DialogTitle>Editar Perfil</DialogTitle>
         <DialogContent>
           <TextField
-            label="Usuário"
+            label="Nome de Usuário"
             fullWidth
             margin="normal"
             value={tempUserInfo.username}
@@ -185,9 +183,20 @@ const Dashboard = () => {
             value={tempUserInfo.email}
             onChange={(e) => setTempUserInfo({ ...tempUserInfo, email: e.target.value })}
           />
+          <TextField
+            label="Senha"
+            fullWidth
+            margin="normal"
+            type="password"
+            value={tempUserInfo.password}
+            onChange={(e) => setTempUserInfo({ ...tempUserInfo, password: e.target.value })}
+          />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel}>Sair</Button>
+          <Button onClick={handleCancel}>Cancelar</Button>
+          <Button onClick={handleSave} variant="contained" color="primary">
+            Salvar
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
