@@ -32,10 +32,24 @@ const style = {
   p: 4,
 };
 
+const confirmDeleteStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 300,
+  bgcolor: 'background.paper',
+  borderRadius: 2,
+  boxShadow: 24,
+  p: 3,
+};
+
 function ClientSystem({ clients, setClients }) {
   const [open, setOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [clientToDelete, setClientToDelete] = useState(null);
   const [clientToEdit, setClientToEdit] = useState(null);
   const [clientDetails, setClientDetails] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -92,9 +106,16 @@ function ClientSystem({ clients, setClients }) {
     }
   };
 
-  const handleDeleteClient = (index) => {
-    const updatedClients = clients.filter((_, i) => i !== index);
+  const handleOpenConfirmDelete = (index) => {
+    setClientToDelete(index);
+    setConfirmDelete(true);
+  };
+  const handleCloseConfirmDelete = () => setConfirmDelete(false);
+  
+  const handleDeleteClient = () => {
+    const updatedClients = clients.filter((_, i) => i !== clientToDelete);
     setClients(updatedClients);
+    handleCloseConfirmDelete();
   };
 
   const handleSaveEdit = () => {
@@ -161,7 +182,7 @@ function ClientSystem({ clients, setClients }) {
                   <IconButton edge="end" aria-label="edit" onClick={() => handleOpenEditModal(index)}>
                     <EditIcon />
                   </IconButton>
-                  <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteClient(index)}>
+                  <IconButton edge="end" aria-label="delete" onClick={() => handleOpenConfirmDelete(index)}>
                     <DeleteIcon />
                   </IconButton>
                 </>
@@ -465,6 +486,17 @@ function ClientSystem({ clients, setClients }) {
             }
           >
             Salvar
+          </Button>
+        </Box>
+      </Modal>
+
+      <Modal open={confirmDelete} onClose={handleCloseConfirmDelete}>
+        <Box sx={confirmDeleteStyle}>
+          <Typography variant="h6" gutterBottom>
+            Tem certeza que deseja excluir este cliente?
+          </Typography>
+          <Button variant="contained" color="error" onClick={handleDeleteClient}>
+            Excluir
           </Button>
         </Box>
       </Modal>
