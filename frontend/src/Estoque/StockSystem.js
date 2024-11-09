@@ -228,6 +228,7 @@ function StockSystem({ items, setItems }) {
                 handleChange("name", value);
               }
             }}
+            inputProps={{ maxLength: 100 }}
             sx={{ mb: 2 }}
             required
           />
@@ -242,6 +243,7 @@ function StockSystem({ items, setItems }) {
                 handleChange("quantity", value === "" ? "" : parseInt(value, 10));
               }
             }}
+            inputProps={{ maxLength: 11 }}
             sx={{ mb: 2 }}
             required
           />
@@ -256,6 +258,7 @@ function StockSystem({ items, setItems }) {
                 handleChange("value", value === "" ? "" : parseFloat(value));
               }
             }}
+            inputProps={{ maxLength: 11 }}
             sx={{ mb: 2 }}
             required
           />
@@ -265,6 +268,7 @@ function StockSystem({ items, setItems }) {
             label="Categoria"
             value={newItem.category}
             onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
+            inputProps={{ maxLength: 30 }}
             sx={{ mb: 2 }}
             required
           >
@@ -283,6 +287,7 @@ function StockSystem({ items, setItems }) {
                 handleChange("lab", value);
               }
             }}
+            inputProps={{ maxLength: 50 }}
             sx={{ mb: 2 }}
             required
           />
