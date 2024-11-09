@@ -167,7 +167,7 @@ const Dashboard = () => {
       </Box>
 
       <Dialog open={openModal} onClose={handleCancel}>
-        <DialogTitle>Editar Perfil</DialogTitle>
+        <DialogTitle>Informações de Usuário</DialogTitle>
         <DialogContent>
           <TextField
             label="Nome de Usuário"
@@ -183,20 +183,9 @@ const Dashboard = () => {
             value={tempUserInfo.email}
             onChange={(e) => setTempUserInfo({ ...tempUserInfo, email: e.target.value })}
           />
-          <TextField
-            label="Senha"
-            fullWidth
-            margin="normal"
-            type="password"
-            value={tempUserInfo.password}
-            onChange={(e) => setTempUserInfo({ ...tempUserInfo, password: e.target.value })}
-          />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel}>Cancelar</Button>
-          <Button onClick={handleSave} variant="contained" color="primary">
-            Salvar
-          </Button>
+          <Button onClick={handleCancel}>Sair</Button>
         </DialogActions>
       </Dialog>
     </Box>
