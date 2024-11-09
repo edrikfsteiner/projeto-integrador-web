@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Card, CardContent, Typography, Grid } from '@mui/material';
 
-const HomePage = ({ items, contacts, clients }) => {
+const HomePage = ({ items, clients }) => {
   const totalItems = items.reduce((total, item) => total + Number(item.quantity || 0), 0);
+  const categoryCounts = items.reduce((acc, item) => {
+    acc[item.category] = (acc[item.category] || 0) + item.quantity;
+    return acc;
+  }, {});
   const lowStockItems = items.filter(item => item.quantity < 10);
-  const totalContacts = contacts.length;
   const totalClients = clients.length;
 
   const [user, setUser] = useState({});
@@ -32,16 +35,12 @@ const HomePage = ({ items, contacts, clients }) => {
               <Typography variant="h6">Resumo do Estoque</Typography>
               <Typography variant="body1">Total de Produtos: {totalItems}</Typography>
               <Typography variant="body1">Produtos com Estoque Baixo: {lowStockItems.length}</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* Resumo do Sistema de Agenda */}
-        <Grid item xs={12} sm={4}>
-          <Card sx={{ backgroundColor: '#e6ffe6' }}>
-            <CardContent>
-              <Typography variant="h6">Resumo da Agenda</Typography>
-              <Typography variant="body1">Total de Contatos: {totalContacts}</Typography>
+              <Typography variant="subtitle1" sx={{ mt: 2 }}>Quantidade por Categoria:</Typography>
+              {Object.entries(categoryCounts).map(([category, count]) => (
+                <Typography variant="body1" key={category}>
+                  {category}: {count}
+                </Typography>
+              ))}
             </CardContent>
           </Card>
         </Grid>
