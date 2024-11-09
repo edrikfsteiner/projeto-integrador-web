@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -51,7 +51,6 @@ function StockSystem({ items, setItems }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
-  const [lowStockModalOpen, setLowStockModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [itemToEdit, setItemToEdit] = useState(null);
   const [itemDetails, setItemDetails] = useState(null);
@@ -65,7 +64,6 @@ function StockSystem({ items, setItems }) {
                                           prescription: false,
   });
   const [editItem, setEditItem] = useState({});
-  const [lowStockItem, setLowStockItem] = useState(null);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -117,19 +115,6 @@ function StockSystem({ items, setItems }) {
     updatedItems[itemToEdit] = editItem;
     setItems(updatedItems);
     handleCloseEditModal();
-  };
-
-  useEffect(() => {
-    const lowStockItems = items.filter(item => item.quantity < 5);
-    if (lowStockItems.length > 0 && (!lowStockItem || lowStockItems[0].name !== lowStockItem.name)) {
-      setLowStockItem(lowStockItems[0]);
-      setLowStockModalOpen(true);
-    }
-  }, [items]);
-
-  const handleCloseLowStockModal = () => {
-    setLowStockModalOpen(false);
-    setLowStockItem(null);
   };
 
   const handleDecimalInput = (value) => {
@@ -202,7 +187,7 @@ function StockSystem({ items, setItems }) {
                     Laboratório: {item.lab} <br />
                     Farmácia Popular: {item.pharmacyPop ? 'Sim' : 'Não'} <br />
                     Requer Receita?: {item.prescription ? 'Sim' : 'Não'} <br />
-                    {item.quantity < 5 && (
+                    {item.quantity <= 10 && (
                       <Typography variant="body2" color="error">
                         <WarningIcon fontSize="small" /> Estoque Baixo
                       </Typography>
@@ -256,7 +241,7 @@ function StockSystem({ items, setItems }) {
                 handleChange("quantity", value === "" ? "" : parseInt(value, 10));
               }
             }}
-            inputProps={{ maxLength: 11 }}
+            inputProps={{ maxLength: 9 }}
             sx={{ mb: 2 }}
             required
           />
@@ -281,7 +266,6 @@ function StockSystem({ items, setItems }) {
             label="Categoria"
             value={newItem.category}
             onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
-            inputProps={{ maxLength: 30 }}
             sx={{ mb: 2 }}
             required
           >
@@ -357,6 +341,7 @@ function StockSystem({ items, setItems }) {
                 setEditItem({ ...editItem, name: value });
               }
             }}
+            inputProps={{ maxLength: 100 }}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -370,6 +355,7 @@ function StockSystem({ items, setItems }) {
                 setEditItem({ ...editItem, quantity: value === "" ? "" : parseInt(value, 10) });
               }
             }}
+            inputProps={{ maxLength: 9 }}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -383,6 +369,7 @@ function StockSystem({ items, setItems }) {
                 setEditItem({ ...editItem, value: value === "" ? "" : parseFloat(value) });
               }
             }}
+            inputProps={{ maxLength: 11 }}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -408,6 +395,7 @@ function StockSystem({ items, setItems }) {
                 setEditItem({ ...editItem, lab: value });
               }
             }}
+            inputProps={{ maxLength: 50 }}
             sx={{ mb: 2 }}
           />
           <FormControlLabel
@@ -480,32 +468,6 @@ function StockSystem({ items, setItems }) {
               </Typography>
             </>
           )}
-        </Box>
-      </Modal>
-
-      {/* Modal de aviso de estoque baixo */}
-      <Modal open={lowStockModalOpen} onClose={handleCloseLowStockModal}>
-        <Box sx={style}>
-          <Typography variant="h6" gutterBottom>
-            Aviso de Estoque Baixo
-          </Typography>
-          {lowStockItem && (
-            <>
-              <Typography variant="body1">
-                O estoque do item "{lowStockItem.name}" está abaixo de 5 unidades.
-              </Typography>
-              <Typography variant="body1">
-                Quantidade: {lowStockItem.quantity}
-              </Typography>
-            </>
-          )}
-          <Button
-            variant="contained"
-            onClick={handleCloseLowStockModal}
-            sx={{ mt: 2 }}
-          >
-            Fechar
-          </Button>
         </Box>
       </Modal>
     </Box>
