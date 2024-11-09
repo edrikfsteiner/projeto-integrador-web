@@ -35,11 +35,6 @@ const ReportPage = ({ items, contacts, clients }) => {
     // Adicionando espaçamento entre seções
     const clientsHeight = 30 + clients.length * 8;
     doc.text('Contatos:', margin, margin + itemsHeight + clientsHeight + 20); // Espaço reduzido entre seções
-    
-    // Adicionando contatos
-    contacts.forEach((contact, index) => {
-      doc.text(`${contact.name} - ${contact.phone} - ${contact.email}`, margin, margin + itemsHeight + clientsHeight + 30 + index * 8); // Espaço entre contatos reduzido
-    });
 
     // Salvando o PDF
     doc.save('relatorio.pdf');
@@ -63,12 +58,6 @@ const ReportPage = ({ items, contacts, clients }) => {
       {clients.map((client) => (
         <Typography key={client.name}>
           {client.name} - {client.email} - {client.phone}
-        </Typography>
-      ))}
-      <Typography variant="h6">Contatos:</Typography>
-      {contacts.map((contact) => (
-        <Typography key={contact.name}>
-          {contact.name} - {contact.phone} - {contact.email}
         </Typography>
       ))}
     </Box>

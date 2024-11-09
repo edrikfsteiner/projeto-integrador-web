@@ -7,13 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import ClientIcon from '@mui/icons-material/People';
-import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
 import ReportIcon from '@mui/icons-material/Assessment';
 import SellIcon from '@mui/icons-material/MonetizationOn';
 import LogoutIcon from '@mui/icons-material/Logout';
 import StockSystem from '../Estoque/StockSystem';
 import ClientSystem from '../Clientes/ClientSystem';
-import PhoneBook from '../Agenda/PhoneBook';
 import HomePage from './HomePage';
 import ReportPage from '../ReportVendas/ReportPage';
 import SalesSystem from '../Vendas/SalesSystem';
@@ -28,11 +26,7 @@ const Dashboard = () => {
   const [clients, setClients] = useState([
     { name: 'João Silva', email: 'joao@gmail.com', phone: '9999-9999' },
   ]);
-  const [contacts, setContacts] = useState([
-    { name: 'Maria Souza', phone: '(11) 99999-9999', email: 'maria@example.com' },
-    { name: 'Pedro Lima', phone: '(21) 88888-8888', email: 'pedro@example.com' },
-  ]);
-  const [salesHistory, setSalesHistory] = useState([]);  // Estado do histórico de vendas
+  const [salesHistory, setSalesHistory] = useState([]);
   const [currentPage, setCurrentPage] = useState('Home');
   const [openModal, setOpenModal] = useState(false);
   const [tempUserInfo, setTempUserInfo] = useState({ username: '', email: '', password: '' });
@@ -136,12 +130,6 @@ const Dashboard = () => {
             </ListItemIcon>
             <ListItemText primary="Clientes" />
           </ListItem>
-          <ListItem button onClick={() => handleNavigation('Agenda')}>
-            <ListItemIcon>
-              <ContactPhoneIcon />
-            </ListItemIcon>
-            <ListItemText primary="Agenda Telefônica" />
-          </ListItem>
           <ListItem button onClick={() => handleNavigation('Relatorio')}>
             <ListItemIcon>
               <ReportIcon />
@@ -158,19 +146,18 @@ const Dashboard = () => {
       </Drawer>
 
       <Box sx={{ flexGrow: 1, p: 3 }}>
-        {currentPage === 'Home' && <HomePage items={items} contacts={contacts} clients={clients} />}
-        {currentPage === 'Vendas' && <SalesSystem items={items} contacts={contacts} clients={clients} setSalesHistory={setSalesHistory} />}
+        {currentPage === 'Home' && <HomePage items={items} clients={clients} />}
+        {currentPage === 'Vendas' && <SalesSystem items={items} clients={clients} setSalesHistory={setSalesHistory} />}
         {currentPage === 'Estoque' && <StockSystem items={items} setItems={setItems} />}
         {currentPage === 'Clientes' && <ClientSystem clients={clients} setClients={setClients} />}
-        {currentPage === 'Agenda' && <PhoneBook contacts={contacts} />}
-        {currentPage === 'Relatorio' && <ReportPage items={items} contacts={contacts} clients={clients} salesHistory={salesHistory} user={user} />}
+        {currentPage === 'Relatorio' && <ReportPage items={items} clients={clients} salesHistory={salesHistory} user={user} />}
       </Box>
 
       <Dialog open={openModal} onClose={handleCancel}>
         <DialogTitle>Informações de Usuário</DialogTitle>
         <DialogContent>
           <TextField
-            label="Nome de Usuário"
+            label="Usuário"
             fullWidth
             margin="normal"
             value={tempUserInfo.username}
