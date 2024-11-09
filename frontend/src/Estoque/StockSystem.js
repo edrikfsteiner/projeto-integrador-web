@@ -55,14 +55,14 @@ function StockSystem({ items, setItems }) {
   const [itemToDelete, setItemToDelete] = useState(null);
   const [itemToEdit, setItemToEdit] = useState(null);
   const [itemDetails, setItemDetails] = useState(null);
-  const [newItem, setNewItem] = useState({
-    name: '',
-    quantity: '',
-    value: '',
-    category: '',
-    lab: '',
-    pharmacyPop: false,
-    prescription: false,
+  const [searchTerm, setSearchTerm] = useState("");
+  const [newItem, setNewItem] = useState({name: '',
+                                          quantity: '',
+                                          value: '',
+                                          category: '',
+                                          lab: '',
+                                          pharmacyPop: false,
+                                          prescription: false,
   });
   const [editItem, setEditItem] = useState({});
   const [lowStockItem, setLowStockItem] = useState(null);
@@ -132,8 +132,6 @@ function StockSystem({ items, setItems }) {
     setLowStockItem(null);
   };
 
-  const isValidText = (value) => /^[A-Za-záéíóúàèìòùâêîôûãõçÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ\s]+$/.test(value);
-
   const handleDecimalInput = (value) => {
     let formattedValue = value.replace(',', '.');
     const [integerPart, decimalPart] = formattedValue.split('.');
@@ -149,18 +147,33 @@ function StockSystem({ items, setItems }) {
     setNewItem({ ...newItem, [field]: value });
   };
 
+  const filteredItems = items.filter(item =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const isValidText = (value) => /^[A-Za-záéíóúàèìòùâêîôûãõçÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ\s]+$/.test(value);
+
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
         Sistema de Estoque
       </Typography>
 
+      <TextField
+        label="Pesquisar Produto"
+        variant="outlined"
+        fullWidth
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        sx={{ mb: 2 }}
+      />
+
       <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
           Itens no Estoque
         </Typography>
         <List>
-          {items.map((item, index) => (
+          {filteredItems.map((item, index) => (
             <ListItem
               key={index}
               secondaryAction={
