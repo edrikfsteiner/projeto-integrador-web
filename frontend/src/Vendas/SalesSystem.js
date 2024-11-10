@@ -119,7 +119,7 @@ function SalesSystem() {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Bem-vindo(a), {user.username}! Sistema de Vendas
+        Sistema de Vendas
       </Typography>
 
       {/* Lista de Itens Disponíveis */}
@@ -255,7 +255,7 @@ function SalesSystem() {
       {/* Registro de Vendas */}
       <Paper elevation={3} sx={{ p: 2, mt: 3 }}>
         <Typography variant="h6" gutterBottom>
-          Bem-vindo(a), a! Histórico de Vendas
+          Histórico de Vendas
         </Typography>
         <List>
           {salesHistory.map((sale, index) => (
