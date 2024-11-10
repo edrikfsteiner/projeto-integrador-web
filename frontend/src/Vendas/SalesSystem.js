@@ -23,8 +23,7 @@ import {
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
-function SalesSystem() {
-  const [items, setItems] = useState([]);
+function SalesSystem({ items, setItems }) {
   const [saleItems, setSaleItems] = useState([]);
   const [totalValue, setTotalValue] = useState(0);
   const [payment, setPayment] = useState(0);
@@ -34,6 +33,7 @@ function SalesSystem() {
   const [paymentMethod, setPaymentMethod] = useState('dinheiro');
   const [installments, setInstallments] = useState(1);
   const [salesHistory, setSalesHistory] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem('loggedInUser');
@@ -81,10 +81,15 @@ function SalesSystem() {
     const updatedItems = items.map((item) => {
       const saleItem = saleItems.find((sItem) => sItem.name === item.name);
       if (saleItem) {
-        return { ...item, quantity: item.quantity - saleItem.quantity };
+        const newQuantity = item.quantity - saleItem.quantity;
+        if (newQuantity < 0) {
+          alert(`Quantidade insuficiente para o item: ${item.name}`);
+          return item;
+        }
+        return { ...item, quantity: newQuantity };
       }
       return item;
-    }).filter(item => item.quantity >= 0);
+    });
 
     setItems(updatedItems);
     localStorage.setItem('items', JSON.stringify(updatedItems));
@@ -109,53 +114,69 @@ function SalesSystem() {
     setSaleModalOpen(false);
   };
 
+  const filteredItems = items.filter(item =>
+    item.barcode.toString().includes(searchTerm) ||
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
         Sistema de Vendas
       </Typography>
 
+      <TextField
+        label="Pesquisar Produto"
+        variant="outlined"
+        fullWidth
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        sx={{ mb: 2 }}
+      />
+
       {/* Lista de Itens Disponíveis */}
-      <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
-        <Typography variant="h6" gutterBottom>
-          Itens Disponíveis no Estoque
-        </Typography>
-        <List>
-          {items.length > 0 ? (
-            items.map((item, index) => (
-              <ListItem
-                key={index}
-                secondaryAction={
-                  <IconButton
-                    edge="end"
-                    aria-label="add"
-                    onClick={() => handleAddToSale(item)}
-                    disabled={item.quantity <= 0}
-                  >
-                    <ShoppingCartIcon />
-                  </IconButton>
-                }
-              >
-                <ListItemAvatar>
-                  <Avatar>
-                    <ShoppingCartIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={item.name}
-                  secondary={`Quantidade: ${item.quantity}, Preço: R$${parseFloat(
-                    item.value || 0
-                  ).toFixed(2)}`}
-                />
-              </ListItem>
-            ))
-          ) : (
-            <Typography variant="body1">
-              Nenhum item disponível no estoque.
-            </Typography>
-          )}
-        </List>
-      </Paper>
+      {searchTerm && (
+        <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Itens Disponíveis no Estoque
+          </Typography>
+          <List>
+            {filteredItems.length > 0 ? (
+              filteredItems.map((item, index) => (
+                <ListItem
+                  key={index}
+                  secondaryAction={
+                    <IconButton
+                      edge="end"
+                      aria-label="add"
+                      onClick={() => handleAddToSale(item)}
+                      disabled={item.quantity <= 0}
+                    >
+                      <ShoppingCartIcon />
+                    </IconButton>
+                  }
+                >
+                  <ListItemAvatar>
+                    <Avatar>
+                      <ShoppingCartIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={item.name}
+                    secondary={`Quantidade: ${item.quantity}, Preço: R$${parseFloat(
+                      item.value || 0
+                    ).toFixed(2)}`}
+                  />
+                </ListItem>
+              ))
+            ) : (
+              <Typography variant="body1">
+                Nenhum item encontrado.
+              </Typography>
+            )}
+          </List>
+        </Paper>
+      )}
 
       {/* Carrinho de Venda */}
       <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
