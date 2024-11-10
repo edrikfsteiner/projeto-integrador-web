@@ -22,6 +22,8 @@ import {
   Select
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import DeleteIcon from '@mui/icons-material/Delete';
+import WarningIcon from '@mui/icons-material/Warning';
 
 function SalesSystem({ items, setItems }) {
   const [saleItems, setSaleItems] = useState([]);
@@ -34,6 +36,7 @@ function SalesSystem({ items, setItems }) {
   const [installments, setInstallments] = useState(1);
   const [salesHistory, setSalesHistory] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem('loggedInUser');
@@ -48,15 +51,15 @@ function SalesSystem({ items, setItems }) {
   }, []);
 
   const handleAddToSale = (item) => {
-    if (item && item.quantity > 0) {
+    if (item && selectedQuantity <= item.quantity && selectedQuantity > 0) {
       const existingItem = saleItems.find((sItem) => sItem.name === item.name);
       const updatedSaleItems = existingItem
         ? saleItems.map((sItem) =>
             sItem.name === item.name
-              ? { ...sItem, quantity: sItem.quantity + 1 }
+              ? { ...sItem, quantity: sItem.quantity + selectedQuantity }
               : sItem
           )
-        : [...saleItems, { ...item, quantity: 1 }];
+        : [...saleItems, { ...item, quantity: selectedQuantity }];
 
       setSaleItems(updatedSaleItems);
 
@@ -68,6 +71,26 @@ function SalesSystem({ items, setItems }) {
         );
         setTotalValue(updatedTotalValue);
       }
+    } else {
+      alert("Quantidade inválida ou maior que a disponível no estoque.");
+    }
+  };
+
+  const handleRemoveFromSale = (itemToRemove) => {
+    const updatedSaleItems = saleItems.filter(item => item.name !== itemToRemove.name);
+    setSaleItems(updatedSaleItems);
+
+    const updatedTotalValue = updatedSaleItems.reduce(
+      (sum, currentItem) => sum + parseFloat(currentItem.value || 0) * currentItem.quantity,
+      0
+    );
+    setTotalValue(updatedTotalValue);
+  };
+
+  const handleQuantityChange = (event) => {
+    const quantity = parseInt(event.target.value, 10);
+    if (quantity >= 1) {
+      setSelectedQuantity(quantity);
     }
   };
 
@@ -143,19 +166,7 @@ function SalesSystem({ items, setItems }) {
           <List>
             {filteredItems.length > 0 ? (
               filteredItems.map((item, index) => (
-                <ListItem
-                  key={index}
-                  secondaryAction={
-                    <IconButton
-                      edge="end"
-                      aria-label="add"
-                      onClick={() => handleAddToSale(item)}
-                      disabled={item.quantity <= 0}
-                    >
-                      <ShoppingCartIcon />
-                    </IconButton>
-                  }
-                >
+                <ListItem key={index}>
                   <ListItemAvatar>
                     <Avatar>
                       <ShoppingCartIcon />
@@ -163,10 +174,39 @@ function SalesSystem({ items, setItems }) {
                   </ListItemAvatar>
                   <ListItemText
                     primary={item.name}
-                    secondary={`Quantidade: ${item.quantity}, Preço: R$${parseFloat(
-                      item.value || 0
-                    ).toFixed(2)}`}
+                    secondary={
+                      <>
+                        Código de Barras: {item.barcode} <br />
+                        Quantidade: {item.quantity} <br />
+                        Valor: R${Number(item.value) ? Number(item.value).toFixed(2) : '0.00'} <br />
+                        Categoria: {item.category} <br />
+                        Laboratório: {item.lab} <br />
+                        Farmácia Popular: {item.pharmacyPop ? 'Sim' : 'Não'} <br />
+                        Requer Receita?: {item.prescription ? 'Sim' : 'Não'} <br />
+                        {item.prescription === true && (
+                          <Typography variant="body2" color="error">
+                            <WarningIcon fontSize="small" /> EXIGIR RECEITA
+                          </Typography>
+                        )}
+                      </>
+                    }
                   />
+                  <TextField
+                    label="Quantidade"
+                    type="number"
+                    value={selectedQuantity}
+                    onChange={handleQuantityChange}
+                    inputProps={{ min: 1, max: item.quantity }}
+                    sx={{ width: '100px', ml: 2 }}
+                  />
+                  <IconButton
+                    edge="end"
+                    aria-label="add"
+                    onClick={() => handleAddToSale(item)}
+                    disabled={selectedQuantity <= 0 || selectedQuantity > item.quantity}
+                  >
+                    <ShoppingCartIcon />
+                  </IconButton>
                 </ListItem>
               ))
             ) : (
@@ -193,6 +233,14 @@ function SalesSystem({ items, setItems }) {
                     parseFloat(item.value || 0) * item.quantity
                   ).toFixed(2)}`}
                 />
+                <IconButton
+                  edge="end"
+                  aria-label="remove"
+                  onClick={() => handleRemoveFromSale(item)}
+                  sx={{ ml: 2 }}
+                >
+                  <DeleteIcon />
+                </IconButton>
               </ListItem>
             ))
           ) : (
