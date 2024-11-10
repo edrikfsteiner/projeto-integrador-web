@@ -55,13 +55,15 @@ function StockSystem({ items, setItems }) {
   const [itemToEdit, setItemToEdit] = useState(null);
   const [itemDetails, setItemDetails] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [newItem, setNewItem] = useState({name: '',
-                                          quantity: '',
-                                          value: '',
-                                          category: '',
-                                          lab: '',
-                                          pharmacyPop: false,
-                                          prescription: false,
+  const [newItem, setNewItem] = useState({
+    barcode: '',
+    name: '',
+    quantity: '',
+    value: '',
+    category: '',
+    lab: '',
+    pharmacyPop: false,
+    prescription: false,
   });
   const [editItem, setEditItem] = useState({});
 
@@ -90,6 +92,7 @@ function StockSystem({ items, setItems }) {
     if(newItem.name && newItem.quantity && newItem.value && newItem.category && newItem.lab){
       setItems(updatedItems);
       setNewItem({
+        barcode: '',
         name: '',
         quantity: '',
         value: '',
@@ -133,6 +136,7 @@ function StockSystem({ items, setItems }) {
   };
 
   const filteredItems = items.filter(item =>
+    item.barcode.toString().includes(searchTerm) ||
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -181,6 +185,7 @@ function StockSystem({ items, setItems }) {
                 primary={item.name}
                 secondary={
                   <>
+                    Código de Barras: {item.barcode} <br />
                     Quantidade: {item.quantity} <br />
                     Valor: R${Number(item.value) ? Number(item.value).toFixed(2) : '0.00'} <br />
                     Categoria: {item.category} <br />
@@ -216,6 +221,21 @@ function StockSystem({ items, setItems }) {
           <Typography variant="h6" gutterBottom>
             Adicionar Novo Item
           </Typography>
+          <TextField
+            fullWidth
+            label="Código de Barras"
+            type="text"
+            value={newItem.barcode || ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*$/.test(value)) {
+                handleChange("barcode", value === "" ? "" : parseInt(value, 10));
+              }
+            }}
+            inputProps={{ maxLength: 14 }}
+            sx={{ mb: 2 }}
+            required
+          />
           <TextField
             fullWidth
             label="Nome do Item"
@@ -331,6 +351,20 @@ function StockSystem({ items, setItems }) {
           <Typography variant="h6" gutterBottom>
             Editar Item
           </Typography>
+          <TextField
+            fullWidth
+            label="Código de Barras"
+            type="text"
+            value={editItem.barcode || ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*$/.test(value)) {
+                handleChange("barcode", value === "" ? "" : parseInt(value, 10));
+              }
+            }}
+            inputProps={{ maxLength: 14 }}
+            sx={{ mb: 2 }}
+          />
           <TextField
             fullWidth
             label="Nome do Item"
@@ -455,6 +489,7 @@ function StockSystem({ items, setItems }) {
               <Typography variant="h6" gutterBottom>
                 Detalhes do Item
               </Typography>
+              <Typography variant="body1">Código de Barras: {itemDetails.barcode}</Typography>
               <Typography variant="body1">Nome: {itemDetails.name}</Typography>
               <Typography variant="body1">Quantidade: {itemDetails.quantity}</Typography>
               <Typography variant="body1">Valor: R${Number(itemDetails.value).toFixed(2)}</Typography>

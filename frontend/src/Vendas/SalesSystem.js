@@ -36,13 +36,6 @@ function SalesSystem() {
   const [salesHistory, setSalesHistory] = useState([]);
 
   useEffect(() => {
-    const storedItems = JSON.parse(localStorage.getItem('items')) || [
-      { name: 'Paracetamol', quantity: 10, value: 5.0 },
-      { name: 'Ibuprofeno', quantity: 15, value: 8.0 },
-      { name: 'Dipirona', quantity: 20, value: 4.0 },
-    ];
-    setItems(storedItems);
-
     const loggedInUser = localStorage.getItem('loggedInUser');
     const users = JSON.parse(localStorage.getItem('users')) || [];
     const foundUser = users.find(u => u.username === loggedInUser);

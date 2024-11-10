@@ -19,13 +19,8 @@ import SalesSystem from '../Vendas/SalesSystem';
 const drawerWidth = 240;
 
 const Dashboard = () => {
-  const [items, setItems] = useState([
-    { name: 'Paracetamol', quantity: 20 },
-    { name: 'Ibuprofeno', quantity: 15 },
-  ]);
-  const [clients, setClients] = useState([
-    { name: 'João Silva', email: 'joao@gmail.com', phone: '9999-9999' },
-  ]);
+  const [items, setItems] = useState([]);
+  const [clients, setClients] = useState([]);
   const [salesHistory, setSalesHistory] = useState([]);
   const [currentPage, setCurrentPage] = useState('Home');
   const [openModal, setOpenModal] = useState(false);
