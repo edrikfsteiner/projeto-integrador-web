@@ -31,12 +31,6 @@ const Dashboard = () => {
   const loggedInUser = localStorage.getItem('loggedInUser');
   const user = storedUsers.find(u => u.username === loggedInUser);
 
-  useEffect(() => {
-    if (user) {
-      setTempUserInfo(user);
-    }
-  }, [user]);
-
   const handleNavigation = (page) => {
     setCurrentPage(page);
   };
@@ -142,7 +136,7 @@ const Dashboard = () => {
 
       <Box sx={{ flexGrow: 1, p: 3 }}>
         {currentPage === 'Home' && <HomePage items={items} clients={clients} />}
-        {currentPage === 'Vendas' && <SalesSystem items={items} clients={clients} setSalesHistory={setSalesHistory} />}
+        {currentPage === 'Vendas' && <SalesSystem items={items} setItems={setItems} clients={clients} setSalesHistory={setSalesHistory} />}
         {currentPage === 'Estoque' && <StockSystem items={items} setItems={setItems} />}
         {currentPage === 'Clientes' && <ClientSystem clients={clients} setClients={setClients} />}
         {currentPage === 'Relatorio' && <ReportPage items={items} clients={clients} salesHistory={salesHistory} user={user} />}
