@@ -34,7 +34,6 @@ function SalesSystem({ items, setItems }) {
   const [user, setUser] = useState({});
   const [paymentMethod, setPaymentMethod] = useState('dinheiro');
   const [installments, setInstallments] = useState(1);
-  const [salesHistory, setSalesHistory] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedQuantity, setSelectedQuantity] = useState(1);
 
@@ -45,9 +44,6 @@ function SalesSystem({ items, setItems }) {
     if (foundUser) {
       setUser(foundUser);
     }
-
-    const storedSalesHistory = JSON.parse(localStorage.getItem('salesHistory')) || [];
-    setSalesHistory(storedSalesHistory);
   }, []);
 
   const handleAddToSale = (item) => {
@@ -125,10 +121,6 @@ function SalesSystem({ items, setItems }) {
       installments: paymentMethod === 'cartao' ? installments : 1,
       date: new Date().toLocaleString(),
     };
-
-    const updatedSalesHistory = [...salesHistory, saleRecord];
-    setSalesHistory(updatedSalesHistory);
-    localStorage.setItem('salesHistory', JSON.stringify(updatedSalesHistory));
 
     setSaleItems([]);
     setTotalValue(0);
@@ -313,25 +305,6 @@ function SalesSystem({ items, setItems }) {
           </Button>
         </DialogActions>
       </Dialog>
-
-      {/* Registro de Vendas */}
-      <Paper elevation={3} sx={{ p: 2, mt: 3 }}>
-        <Typography variant="h6" gutterBottom>
-          Histórico de Vendas
-        </Typography>
-        <List>
-          {salesHistory.map((sale, index) => (
-            <ListItem key={index}>
-              <ListItemText
-                primary={`Venda realizada em ${sale.date} por ${sale.user}`}
-                secondary={`Total: R$${sale.totalValue.toFixed(2)} - Método de pagamento: ${sale.paymentMethod}${
-                  sale.paymentMethod === 'cartao' ? ` em ${sale.installments}x` : ''
-                }`}
-              />
-            </ListItem>
-          ))}
-        </List>
-      </Paper>
     </Box>
   );
 }
