@@ -10,7 +10,7 @@ import ClientIcon from '@mui/icons-material/People';
 import ReportIcon from '@mui/icons-material/Assessment';
 import SellIcon from '@mui/icons-material/MonetizationOn';
 import LogoutIcon from '@mui/icons-material/Logout';
-import StockSystem from '../Estoque/StockSystem';
+import ProductSystem from '../Produtos/ProductSystem';
 import ClientSystem from '../Clientes/ClientSystem';
 import HomePage from './HomePage';
 import ReportPage from '../ReportVendas/ReportPage';
@@ -97,11 +97,11 @@ const Dashboard = () => {
             </ListItemIcon>
             <ListItemText primary="Vendas" />
           </ListItem>
-          <ListItem button onClick={() => handleNavigation('Estoque')}>
+          <ListItem button onClick={() => handleNavigation('Produtos')}>
             <ListItemIcon>
               <InventoryIcon />
             </ListItemIcon>
-            <ListItemText primary="Estoque" />
+            <ListItemText primary="Produtos" />
           </ListItem>
           <ListItem button onClick={() => handleNavigation('Clientes')}>
             <ListItemIcon>
@@ -127,7 +127,7 @@ const Dashboard = () => {
       <Box sx={{ flexGrow: 1, p: 3 }}>
         {currentPage === 'Home' && <HomePage items={items} clients={clients} sales={sales} />}
         {currentPage === 'Vendas' && <SalesSystem items={items} setItems={setItems} clients={clients} sales={sales} setSales={setSales} />}
-        {currentPage === 'Estoque' && <StockSystem items={items} setItems={setItems} />}
+        {currentPage === 'Produtos' && <ProductSystem items={items} setItems={setItems} />}
         {currentPage === 'Clientes' && <ClientSystem clients={clients} setClients={setClients} />}
         {currentPage === 'Relatorio' && <ReportPage items={items} clients={clients} sales={sales} user={user} />}
       </Box>

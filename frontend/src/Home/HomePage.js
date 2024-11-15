@@ -29,11 +29,11 @@ const HomePage = ({ items, clients, sales }) => {
       </Typography>
 
       <Grid container spacing={3}>
-        {/* Resumo do Sistema de Estoque */}
+        {/* Resumo do Sistema de Produtos */}
         <Grid item xs={12} sm={4}>
           <Card sx={{ backgroundColor: '#f0f8ff' }}>
             <CardContent>
-              <Typography variant="h6">Resumo do Estoque</Typography>
+              <Typography variant="h6">Resumo dos Produtos</Typography>
               <Typography variant="body1">Total de Produtos: {totalItems}</Typography>
               <Typography variant="body1">Produtos com Estoque Baixo: {lowStockItems.length}</Typography>
               <Typography variant="subtitle1" sx={{ mt: 2 }}>Quantidade por Categoria:</Typography>
