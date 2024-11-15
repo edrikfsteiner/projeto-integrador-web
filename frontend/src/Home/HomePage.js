@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Card, CardContent, Typography, Grid } from '@mui/material';
 
-const HomePage = ({ items, clients }) => {
+const HomePage = ({ items, clients, sales }) => {
   const totalItems = items.reduce((total, item) => total + Number(item.quantity || 0), 0);
   const categoryCounts = items.reduce((acc, item) => {
     acc[item.category] = (acc[item.category] || 0) + item.quantity;
@@ -9,7 +9,8 @@ const HomePage = ({ items, clients }) => {
   }, {});
   const lowStockItems = items.filter(item => item.quantity < 10);
   const totalClients = clients.length;
-
+  const totalSales = sales.length;
+  const totalRevenue = sales.reduce((total, sale) => total + sale.totalValue, 0);
   const [user, setUser] = useState({});
 
   useEffect(() => {
@@ -51,6 +52,16 @@ const HomePage = ({ items, clients }) => {
             <CardContent>
               <Typography variant="h6">Resumo dos Clientes</Typography>
               <Typography variant="body1">Total de Clientes: {totalClients}</Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        {/* Resumo do Sistema de Vendas */}
+        <Grid item xs={12} sm={4}>
+          <Card sx={{ backgroundColor: '#e6ffe6' }}>
+            <CardContent>
+              <Typography variant="h6">Resumo de Vendas</Typography>
+              <Typography variant="body1">Total de Vendas: {totalSales}</Typography>
+              <Typography variant="body1">Receita Total: R${totalRevenue.toFixed(2)}</Typography>
             </CardContent>
           </Card>
         </Grid>

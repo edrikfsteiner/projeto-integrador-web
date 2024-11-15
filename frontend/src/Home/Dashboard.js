@@ -21,7 +21,7 @@ const drawerWidth = 240;
 const Dashboard = () => {
   const [items, setItems] = useState([]);
   const [clients, setClients] = useState([]);
-  const [salesHistory, setSalesHistory] = useState([]);
+  const [sales, setSales] = useState([]);
   const [currentPage, setCurrentPage] = useState('Home');
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
@@ -125,11 +125,11 @@ const Dashboard = () => {
       </Drawer>
 
       <Box sx={{ flexGrow: 1, p: 3 }}>
-        {currentPage === 'Home' && <HomePage items={items} clients={clients} />}
-        {currentPage === 'Vendas' && <SalesSystem items={items} setItems={setItems} clients={clients} setSalesHistory={setSalesHistory} />}
+        {currentPage === 'Home' && <HomePage items={items} clients={clients} sales={sales} />}
+        {currentPage === 'Vendas' && <SalesSystem items={items} setItems={setItems} clients={clients} sales={sales} setSales={setSales} />}
         {currentPage === 'Estoque' && <StockSystem items={items} setItems={setItems} />}
         {currentPage === 'Clientes' && <ClientSystem clients={clients} setClients={setClients} />}
-        {currentPage === 'Relatorio' && <ReportPage items={items} clients={clients} salesHistory={salesHistory} user={user} />}
+        {currentPage === 'Relatorio' && <ReportPage items={items} clients={clients} sales={sales} user={user} />}
       </Box>
 
       <Dialog open={openModal} onClose={handleCancel}>
