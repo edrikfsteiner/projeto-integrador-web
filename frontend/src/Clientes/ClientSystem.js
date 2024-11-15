@@ -99,7 +99,7 @@ function ClientSystem({ clients, setClients }) {
                     street: '',
                     district: '',
                     city: '',
-                    uf: '' });
+                    uf: ''});
       handleClose();
     } else {
       alert("Por favor, preencha todos os campos corretamente.");
@@ -195,16 +195,20 @@ function ClientSystem({ clients, setClients }) {
               </ListItemAvatar>
               <ListItemText
                 primary={client.name}
-                secondary={`Email: ${client.email} | 
-                            Celular: ${formatPhone(client.phone)} | 
-                            CPF: ${client.cpf} | 
-                            Data de nascimento: ${client.birthdate} | 
-                            Número: ${client.number} | 
-                            CEP: ${client.cep} | 
-                            Rua: ${client.street} | 
-                            Bairro: ${client.district} | 
-                            Cidade: ${client.city} | 
-                            UF: ${client.uf}`}
+                secondary={
+                  <>
+                    Email: {client.email} <br />
+                    Celular: {formatPhone(client.phone)} <br />
+                    CPF: {client.cpf} <br />
+                    Data de nascimento: {client.birthdate} <br />
+                    Número: {client.number} <br />
+                    CEP: {client.cep} <br />
+                    Rua: {client.street} <br />
+                    Bairro: {client.district} <br />
+                    Cidade: {client.city} <br />
+                    UF: {client.uf}
+                  </>
+                }
               />
             </ListItem>
           ))}

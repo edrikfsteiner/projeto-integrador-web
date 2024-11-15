@@ -25,7 +25,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import DeleteIcon from '@mui/icons-material/Delete';
 import WarningIcon from '@mui/icons-material/Warning';
 
-function SalesSystem({ items, setItems }) {
+function SalesSystem({ clients, items, setItems }) {
   const [saleItems, setSaleItems] = useState([]);
   const [totalValue, setTotalValue] = useState(0);
   const [payment, setPayment] = useState(0);
@@ -35,7 +35,9 @@ function SalesSystem({ items, setItems }) {
   const [paymentMethod, setPaymentMethod] = useState('dinheiro');
   const [installments, setInstallments] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [clientSearchTerm, setClientSearchTerm] = useState("");
   const [selectedQuantity, setSelectedQuantity] = useState(1);
+  const [selectedClient, setSelectedClient] = useState(null);
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem('loggedInUser');
@@ -96,7 +98,17 @@ function SalesSystem({ items, setItems }) {
     setChange(paymentAmount - totalValue);
   };
 
+  const handleClientSelect = (client) => {
+    setSelectedClient(client);
+    setClientSearchTerm("");
+  };
+
   const handleSell = () => {
+    if (!selectedClient) {
+      alert("Selecione um cliente à venda");
+      return;
+    }
+
     const updatedItems = items.map((item) => {
       const saleItem = saleItems.find((sItem) => sItem.name === item.name);
       if (saleItem) {
@@ -115,6 +127,7 @@ function SalesSystem({ items, setItems }) {
 
     const saleRecord = {
       user: user.username,
+      client: selectedClient,
       items: saleItems,
       totalValue,
       paymentMethod,
@@ -127,11 +140,17 @@ function SalesSystem({ items, setItems }) {
     setPayment(0);
     setChange(0);
     setSaleModalOpen(false);
+    setSelectedClient(null);
   };
 
   const filteredItems = items.filter(item =>
     item.barcode.toString().includes(searchTerm) ||
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredClients = clients.filter(client =>
+    client.cpf.toString().includes(clientSearchTerm) ||
+    client.name.toLowerCase().includes(clientSearchTerm.toLowerCase())
   );
 
   return (
@@ -141,6 +160,14 @@ function SalesSystem({ items, setItems }) {
       </Typography>
 
       <TextField
+        label="Pesquisar Cliente"
+        variant="outlined"
+        fullWidth
+        value={clientSearchTerm}
+        onChange={(e) => setClientSearchTerm(e.target.value)}
+        sx={{ mb: 2 }}
+      />
+      <TextField
         label="Pesquisar Produto"
         variant="outlined"
         fullWidth
@@ -149,7 +176,40 @@ function SalesSystem({ items, setItems }) {
         sx={{ mb: 2 }}
       />
 
-      {/* Lista de Itens Disponíveis */}
+      {clientSearchTerm && (
+        <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Clientes Cadastrados
+          </Typography>
+          <List>
+            {filteredClients.length > 0 ? (
+              filteredClients.map((client, index) => (
+                <ListItem key={index} button onClick={() => handleClientSelect(client)}>
+                  <ListItemText
+                    primary={client.name}
+                    secondary={
+                      <>
+                        Email: {client.email} <br />
+                        Celular: {client.phone} <br />
+                        CPF: {client.cpf} <br />
+                        Data de nascimento: {client.birthdate} <br />
+                        Número: {client.number} <br />
+                        CEP: {client.cep} <br />
+                        Rua: {client.street} <br />
+                        Bairro: {client.district} <br />
+                        Cidade: {client.city} <br />
+                        UF: {client.uf}
+                      </>
+                    }
+                  />
+                </ListItem>
+              ))
+            ) : (
+              <Typography variant="body1">Nenhum cliente encontrado.</Typography>
+            )}
+          </List>
+        </Paper>
+      )}
       {searchTerm && (
         <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
           <Typography variant="h6" gutterBottom>
@@ -209,7 +269,11 @@ function SalesSystem({ items, setItems }) {
           </List>
         </Paper>
       )}
-
+      {selectedClient && (
+        <Typography variant="h6" sx={{ mb: 3 }}>
+          Cliente Selecionado: {selectedClient.name}
+        </Typography>
+      )}
       {/* Carrinho de Venda */}
       <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
@@ -262,20 +326,32 @@ function SalesSystem({ items, setItems }) {
             onChange={(e) => setPaymentMethod(e.target.value)}
           >
             <FormControlLabel value="dinheiro" control={<Radio />} label="Dinheiro" />
-            <FormControlLabel value="cartao" control={<Radio />} label="Cartão" />
+            <FormControlLabel value="credito" control={<Radio />} label="Cartão de Crédito" />
+            <FormControlLabel value="debito" control={<Radio />} label="Cartão de Débito" />
             <FormControlLabel value="pix" control={<Radio />} label="Pix" />
           </RadioGroup>
 
-          {paymentMethod === 'cartao' && (
+          {paymentMethod === 'credito' && (
             <TextField
               label="Parcelas"
               type="number"
               fullWidth
               variant="outlined"
               value={installments}
-              onChange={(e) => setInstallments(parseInt(e.target.value) || 1)}
+              onChange={(e) => {
+                const newInstallments = parseInt(e.target.value) || 1;
+                const minPerInstallment = totalValue / newInstallments >= 50;
+                if (minPerInstallment) {
+                  setInstallments(newInstallments);
+                }
+              }}
               inputProps={{ min: 1 }}
               sx={{ mt: 2 }}
+              helperText={
+                totalValue / installments < 50
+                  ? "Cada parcela deve ser no mínimo R$50."
+                  : null
+              }
             />
           )}
 
@@ -299,7 +375,10 @@ function SalesSystem({ items, setItems }) {
           <Button
             onClick={handleSell}
             color="primary"
-            disabled={payment < totalValue}
+            disabled={
+              payment < totalValue ||
+              (paymentMethod === 'credito' && totalValue / installments < 50)
+            }
           >
             Vender
           </Button>
