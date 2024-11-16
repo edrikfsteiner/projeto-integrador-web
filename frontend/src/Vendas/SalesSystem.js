@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -17,15 +17,13 @@ import {
   DialogActions,
   RadioGroup,
   FormControlLabel,
-  Radio,
-  MenuItem,
-  Select
+  Radio
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import DeleteIcon from '@mui/icons-material/Delete';
 import WarningIcon from '@mui/icons-material/Warning';
 
-function SalesSystem({ clients, items, setItems }) {
+function SalesSystem({ clients, items, setItems, sales, setSales }) {
   const [saleItems, setSaleItems] = useState([]);
   const [totalValue, setTotalValue] = useState(0);
   const [payment, setPayment] = useState(0);
@@ -39,15 +37,6 @@ function SalesSystem({ clients, items, setItems }) {
   const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [selectedClient, setSelectedClient] = useState(null);
 
-  useEffect(() => {
-    const loggedInUser = localStorage.getItem('loggedInUser');
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const foundUser = users.find(u => u.username === loggedInUser);
-    if (foundUser) {
-      setUser(foundUser);
-    }
-  }, []);
-
   const handleAddToSale = (item) => {
     if (item && selectedQuantity <= item.quantity && selectedQuantity > 0) {
       const existingItem = saleItems.find((sItem) => sItem.name === item.name);
@@ -60,15 +49,12 @@ function SalesSystem({ clients, items, setItems }) {
         : [...saleItems, { ...item, quantity: selectedQuantity }];
 
       setSaleItems(updatedSaleItems);
-
-      if (Array.isArray(updatedSaleItems) && updatedSaleItems.length > 0) {
-        const updatedTotalValue = updatedSaleItems.reduce(
-          (sum, currentItem) =>
-            sum + parseFloat(currentItem.value || 0) * currentItem.quantity,
-          0
-        );
-        setTotalValue(updatedTotalValue);
-      }
+      const updatedTotalValue = updatedSaleItems.reduce(
+        (sum, currentItem) =>
+          sum + parseFloat(currentItem.value || 0) * currentItem.quantity,
+        0
+      );
+      setTotalValue(updatedTotalValue);
     } else {
       alert("Quantidade inválida ou maior que a disponível no estoque.");
     }
@@ -109,6 +95,15 @@ function SalesSystem({ clients, items, setItems }) {
       return;
     }
 
+    const newSale = {
+      client: selectedClient,
+      items: saleItems,
+      total: totalValue,
+      paymentMethod: paymentMethod,
+      installments: paymentMethod === 'credito' ? installments : 1,
+      date: new Date().toISOString(),
+    };
+
     const updatedItems = items.map((item) => {
       const saleItem = saleItems.find((sItem) => sItem.name === item.name);
       if (saleItem) {
@@ -123,18 +118,7 @@ function SalesSystem({ clients, items, setItems }) {
     });
 
     setItems(updatedItems);
-    localStorage.setItem('items', JSON.stringify(updatedItems));
-
-    const saleRecord = {
-      user: user.username,
-      client: selectedClient,
-      items: saleItems,
-      totalValue,
-      paymentMethod,
-      installments: paymentMethod === 'cartao' ? installments : 1,
-      date: new Date().toLocaleString(),
-    };
-
+    setSales([...sales, newSale]);
     setSaleItems([]);
     setTotalValue(0);
     setPayment(0);
