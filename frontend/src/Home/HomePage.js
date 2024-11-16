@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Card, CardContent, Typography, Grid } from '@mui/material';
 
-const HomePage = ({ items, clients, sales }) => {
+const HomePage = ({ items, clients, sales, purchases }) => {
   const totalItems = items.reduce((total, item) => total + Number(item.quantity || 0), 0);
   const categoryCounts = items.reduce((acc, item) => {
     acc[item.category] = (acc[item.category] || 0) + item.quantity;
@@ -9,8 +9,10 @@ const HomePage = ({ items, clients, sales }) => {
   }, {});
   const lowStockItems = items.filter(item => item.quantity < 10);
   const totalClients = clients.length;
-  const totalSales = sales.length;
-  const totalRevenue = sales.reduce((total, sale) => total + sale.totalValue, 0);
+  const totalSales = sales ? sales.length : 0;
+  const totalRevenue = sales.reduce((sum, sale) => sum + (sale.total || 0), 0);
+  const totalPurchases = purchases ? purchases.length : 0;
+  const totalExpenses = purchases ? purchases.reduce((sum, purchase) => sum + (purchase.total || 0), 0) : 0;
   const [user, setUser] = useState({});
 
   useEffect(() => {
@@ -46,15 +48,16 @@ const HomePage = ({ items, clients, sales }) => {
           </Card>
         </Grid>
 
-        {/* Resumo do Sistema de Clientes */}
         <Grid item xs={12} sm={4}>
-          <Card sx={{ backgroundColor: '#ffe4e1' }}>
+          <Card sx={{ backgroundColor: '#f0f8ff' }}>
             <CardContent>
-              <Typography variant="h6">Resumo dos Clientes</Typography>
-              <Typography variant="body1">Total de Clientes: {totalClients}</Typography>
+              <Typography variant="h6">Resumo do Estoque</Typography>
+              <Typography variant="body1">Total de Compras: {totalPurchases}</Typography>
+              <Typography variant="body1">Despesa Total: R${totalExpenses.toFixed(2)}</Typography>
             </CardContent>
           </Card>
         </Grid>
+
         {/* Resumo do Sistema de Vendas */}
         <Grid item xs={12} sm={4}>
           <Card sx={{ backgroundColor: '#e6ffe6' }}>
@@ -62,6 +65,16 @@ const HomePage = ({ items, clients, sales }) => {
               <Typography variant="h6">Resumo de Vendas</Typography>
               <Typography variant="body1">Total de Vendas: {totalSales}</Typography>
               <Typography variant="body1">Receita Total: R${totalRevenue.toFixed(2)}</Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Resumo do Sistema de Clientes */}
+        <Grid item xs={12} sm={4}>
+          <Card sx={{ backgroundColor: '#ffe4e1' }}>
+            <CardContent>
+              <Typography variant="h6">Resumo dos Clientes</Typography>
+              <Typography variant="body1">Total de Clientes: {totalClients}</Typography>
             </CardContent>
           </Card>
         </Grid>

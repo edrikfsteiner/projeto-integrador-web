@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Drawer, List, ListItem, ListItemText, ListItemIcon, Box, Avatar, Typography, Dialog,
-  DialogTitle, DialogContent, DialogActions, Button, TextField,
+  DialogTitle, DialogContent, DialogActions, Button, TextField
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import StoreIcon from '@mui/icons-material/Store';
 import ClientIcon from '@mui/icons-material/People';
 import ReportIcon from '@mui/icons-material/Assessment';
 import SellIcon from '@mui/icons-material/MonetizationOn';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ProductSystem from '../Produtos/ProductSystem';
+import StockSystem from '../Estoque/StockSystem';
 import ClientSystem from '../Clientes/ClientSystem';
 import HomePage from './HomePage';
 import ReportPage from '../ReportVendas/ReportPage';
@@ -22,6 +24,7 @@ const Dashboard = () => {
   const [items, setItems] = useState([]);
   const [clients, setClients] = useState([]);
   const [sales, setSales] = useState([]);
+  const [purchases, setPurchases] = useState([]);
   const [currentPage, setCurrentPage] = useState('Home');
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
@@ -99,9 +102,15 @@ const Dashboard = () => {
           </ListItem>
           <ListItem button onClick={() => handleNavigation('Produtos')}>
             <ListItemIcon>
-              <InventoryIcon />
+              <StoreIcon />
             </ListItemIcon>
             <ListItemText primary="Produtos" />
+          </ListItem>
+          <ListItem button onClick={() => handleNavigation('Estoque')}>
+            <ListItemIcon>
+              <InventoryIcon />
+            </ListItemIcon>
+            <ListItemText primary="Estoque" />
           </ListItem>
           <ListItem button onClick={() => handleNavigation('Clientes')}>
             <ListItemIcon>
@@ -125,9 +134,10 @@ const Dashboard = () => {
       </Drawer>
 
       <Box sx={{ flexGrow: 1, p: 3 }}>
-        {currentPage === 'Home' && <HomePage items={items} clients={clients} sales={sales} />}
+        {currentPage === 'Home' && <HomePage items={items} clients={clients} sales={sales} purchases={purchases} />}
         {currentPage === 'Vendas' && <SalesSystem items={items} setItems={setItems} clients={clients} sales={sales} setSales={setSales} />}
         {currentPage === 'Produtos' && <ProductSystem items={items} setItems={setItems} />}
+        {currentPage === 'Estoque' && <StockSystem items={items} setItems={setItems} purchases={purchases} setPurchases={setPurchases} />}
         {currentPage === 'Clientes' && <ClientSystem clients={clients} setClients={setClients} />}
         {currentPage === 'Relatorio' && <ReportPage items={items} clients={clients} sales={sales} user={user} />}
       </Box>
