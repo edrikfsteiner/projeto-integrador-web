@@ -353,20 +353,6 @@ function ProductSystem({ items, setItems }) {
           </Typography>
           <TextField
             fullWidth
-            label="Código de Barras"
-            type="text"
-            value={editItem.barcode || ''}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (/^\d*$/.test(value)) {
-                handleChange("barcode", value === "" ? "" : parseInt(value, 10));
-              }
-            }}
-            inputProps={{ maxLength: 14 }}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
             label="Nome do Item"
             value={editItem.name}
             onChange={(e) => {
@@ -376,20 +362,6 @@ function ProductSystem({ items, setItems }) {
               }
             }}
             inputProps={{ maxLength: 100 }}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="Quantidade"
-            type="text"
-            value={editItem.quantity || ''}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (/^\d*$/.test(value)) {
-                setEditItem({ ...editItem, quantity: value === "" ? "" : parseInt(value, 10) });
-              }
-            }}
-            inputProps={{ maxLength: 9 }}
             sx={{ mb: 2 }}
           />
           <TextField
