@@ -53,17 +53,19 @@ function ClientSystem({ clients, setClients }) {
   const [clientToEdit, setClientToEdit] = useState(null);
   const [clientDetails, setClientDetails] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [newClient, setNewClient] = useState({name: '',
-                                              email: '',
-                                              phone: '',
-                                              cpf: '',
-                                              birthdate: '',
-                                              number: '',
-                                              cep: '',
-                                              street: '',
-                                              district: '',
-                                              city: '',
-                                              uf: '' });
+  const [newClient, setNewClient] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    cpf: '',
+    birthdate: '',
+    number: '',
+    cep: '',
+    street: '',
+    district: '',
+    city: '',
+    uf: '' 
+  });
   const [editClient, setEditClient] = useState({});
 
   const handleOpen = () => setOpen(true);
@@ -89,17 +91,19 @@ function ClientSystem({ clients, setClients }) {
     if (newClient.name && newClient.email && newClient.phone && isValidCpf(newClient.cpf) && isValidBirthdate(newClient.birthdate)) {
       const formattedCpf = formatCpf(newClient.cpf);
       setClients([...clients, { ...newClient, cpf: formattedCpf }]);
-      setNewClient({name: '',
-                    email: '',
-                    phone: '',
-                    cpf: '',
-                    birthdate: '',
-                    number: '',
-                    cep: '',
-                    street: '',
-                    district: '',
-                    city: '',
-                    uf: ''});
+      setNewClient({
+        name: '',
+        email: '',
+        phone: '',
+        cpf: '',
+        birthdate: '',
+        number: '',
+        cep: '',
+        street: '',
+        district: '',
+        city: '',
+        uf: ''
+      });
       handleClose();
     } else {
       alert("Por favor, preencha todos os campos corretamente.");
@@ -373,7 +377,8 @@ function ClientSystem({ clients, setClients }) {
               !newClient.street ||
               !newClient.district ||
               !newClient.city ||
-              !newClient.uf
+              !newClient.uf ||
+              newClient.uf.length !== 2
             }
           >
             Adicionar
@@ -486,7 +491,8 @@ function ClientSystem({ clients, setClients }) {
               !editClient.street ||
               !editClient.district ||
               !editClient.city ||
-              !editClient.uf
+              !editClient.uf ||
+              editClient.uf.length !== 2
             }
           >
             Salvar
