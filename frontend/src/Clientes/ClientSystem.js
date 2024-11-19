@@ -130,6 +130,7 @@ function ClientSystem({ clients, setClients }) {
   };
 
   const filteredClients = clients.filter(client =>
+    client.cpf.toString().includes(searchTerm) ||
     client.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 

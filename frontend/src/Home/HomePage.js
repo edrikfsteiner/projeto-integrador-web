@@ -53,7 +53,7 @@ const HomePage = ({ items, clients, sales, purchases }) => {
             <CardContent>
               <Typography variant="h6">Resumo do Estoque</Typography>
               <Typography variant="body1">Total de Compras: {totalPurchases}</Typography>
-              <Typography variant="body1">Despesa Total: R${totalExpenses.toFixed(2)}</Typography>
+              <Typography variant="body1">Entrada: R${totalExpenses.toFixed(2)}</Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -64,7 +64,7 @@ const HomePage = ({ items, clients, sales, purchases }) => {
             <CardContent>
               <Typography variant="h6">Resumo de Vendas</Typography>
               <Typography variant="body1">Total de Vendas: {totalSales}</Typography>
-              <Typography variant="body1">Receita Total: R${totalRevenue.toFixed(2)}</Typography>
+              <Typography variant="body1">Saída: R${totalRevenue.toFixed(2)}</Typography>
             </CardContent>
           </Card>
         </Grid>
