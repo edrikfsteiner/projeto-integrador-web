@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Enderecos } from './Enderecos';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from "typeorm"
+import { Vendas } from './Vendas';
 
 @Entity()
 export class Clientes {
@@ -17,5 +19,14 @@ export class Clientes {
 
     @Column({type: 'int' ,width: 11})
     celular: number
+
+    @Column({type: 'date'})
+    data_nasc: Date
+
+    @ManyToOne(() => Enderecos, enderecos => enderecos.clientes)
+    enderecos: Enderecos
+
+    @OneToMany(() => Vendas, enderecos => enderecos.clientes)
+    vendas: Vendas[]
 
 }

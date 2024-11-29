@@ -4,17 +4,17 @@ import { produtoRepository } from "../repository/ProdutoRepository";
 export class ProdutoController {
     async create(req: Request, res: Response, next: NextFunction) {
         try {          
-            const {nome, categoria ,valor ,quantidade, laboratorio, farmacia_pop, receita} = req.body
+            const {nome, categoria ,preco ,quantidade, laboratorio, farmacia_pop, receita} = req.body
 
             console.log("teste foda",req.body)
             
-            if(!nome && !valor && !quantidade && !laboratorio){
+            if(!nome && !preco && !quantidade && !laboratorio){
                 return res.status(400).json({message: "Ensira todos os dados "})
             }
 
             const newProduto = produtoRepository.create({
-                nome, categoria, valor
-                ,quantidade, laboratorio, 
+                nome, categoria, preco,
+                quantidade, laboratorio, 
                 farmacia_pop, receita
             })
 
@@ -38,10 +38,10 @@ export class ProdutoController {
 
     async putProduto(req: Request, res: Response, next: NextFunction){
         try {
-            const {nome, categoria ,valor ,quantidade, laboratorio, farmacia_pop, receita} = req.body
+            const {nome, categoria ,preco ,quantidade, laboratorio, farmacia_pop, receita} = req.body
             const {id} = req.params
             
-            if(!nome && !categoria && !valor && !quantidade && !laboratorio ){
+            if(!nome && !categoria && !preco && !quantidade && !laboratorio ){
                 return res.status(400).json({message: "Ensira todos os dados "})
             }
 
@@ -49,7 +49,7 @@ export class ProdutoController {
                 return res.status(400).json({message: "Nao foi possivel achar o produto"})
             }
 
-            const newProduto = await produtoRepository.update(id,{nome,categoria,valor,quantidade,laboratorio,farmacia_pop,receita})
+            const newProduto = await produtoRepository.update(id,{nome,categoria,preco,quantidade,laboratorio,farmacia_pop,receita})
 
             return res.status(200).json({message: "Dados alterado"})
             

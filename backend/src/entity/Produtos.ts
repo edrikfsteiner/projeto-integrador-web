@@ -1,4 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, Double } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, Double, OneToMany } from "typeorm"
+import { IntensVendas } from "./itens_vendas"
+import { IntensCompras } from "./itens_compra"
+
 
 @Entity()
 export class Produtos {
@@ -7,13 +10,16 @@ export class Produtos {
     id: string
 
     @Column({type: 'varchar'})
+    codigo_de_barra: string
+
+    @Column({type: 'varchar'})
     nome: string
 
     @Column({type: 'varchar'})
     categoria: string
 
     @Column({type: 'decimal'})
-    valor: string
+    preco: string
 
     @Column({type: 'int'})
     quantidade: number
@@ -26,5 +32,11 @@ export class Produtos {
 
     @Column({type: 'boolean'})
     receita: boolean
+
+    @OneToMany(() => IntensVendas, intensVends => intensVends.produtos)
+    intensVends: IntensVendas[]
+
+    @OneToMany(() => IntensCompras, intensCompras => intensCompras.produtos)
+    intensCompras: IntensCompras[]
 
 }
